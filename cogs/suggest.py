@@ -1,8 +1,8 @@
 import discord
 import time
+import settings
 from discord.ext import commands
 
-suggest_ch = [000000000000000000, 000000000000000000]
 
 class suggest(commands.Cog):
 
@@ -13,7 +13,7 @@ class suggest(commands.Cog):
     async def on_message(self, message):
         channel = self.client.get_channel(message.channel.id)
 
-        if message.channel.id in suggest_ch:
+        if message.channel.id in settings.channels.suggest:
             if message.author.bot:
                 return
             else:
@@ -27,13 +27,15 @@ class suggest(commands.Cog):
                         color = 0xfc652c
                     )
                     embed.set_author(name = f"Идея от {message.author.display_name}", icon_url = message.author.avatar_url)
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} © Created by blackhome7')
+                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
                     await message.delete()
                     msg1 = await channel.send(embed=embed)
-
-                    await msg1.add_reaction('👍')
-                    await msg1.add_reaction('👎') 
-
+                    if message.channel.id != settings.channels.todo:
+                        await msg1.add_reaction('👍')
+                        await msg1.add_reaction('👎')
+                    else:
+                        await msg1.add_reaction('✔')
+                        await msg1.add_reaction('❌')
         else:
             return
 

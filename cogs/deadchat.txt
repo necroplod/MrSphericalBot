@@ -26,3 +26,34 @@ async def deadchat(self):
 def setup(client):    
     client.add_cog(deadchat(client))
     deadchat.start()
+
+
+
+"""
+@tasks.loop(minutes=60)
+async def deadchat():
+    hour = datetime.datetime.today().strftime("%H")
+    sleep = [
+            21,
+            23,
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+            ]
+
+    if hour in sleep:
+        return
+    else:
+        channel = client.get_channel(997245771290247240)
+        await channel.send("<@&997425504485384253>")
+
+@client.event
+async def on_ready():
+    deadchat.start()
+"""

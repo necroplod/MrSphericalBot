@@ -1,54 +1,27 @@
-import datetime
-
-from os import listdir
-from os.path import join, realpath, split, splitext
-
+import config
+import settings
 from discord import Intents
 from discord.ext import commands
-from discord.ext import tasks
-from config import settings
 from dislash import InteractionClient
 
 
-client = commands.Bot(command_prefix = ['s.', 'S.'], intents=Intents.all())
+client = commands.Bot(command_prefix = config.PREFIX, case_insensitive=True, intents=Intents.all())
 client.remove_command('help')
 InteractionClient(client)
-
-"""
-@tasks.loop(minutes=60)
-async def deadchat():
-    hour = datetime.datetime.today().strftime("%H")
-    sleep = [
-            21,
-            23,
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8
-            ]
-
-    if hour in sleep:
-        return
-    else:
-        channel = client.get_channel(997245771290247240)
-        await channel.send("<@&997425504485384253>")
-
-@client.event
-async def on_ready():
-    deadchat.start()
-"""
+line = '----------------------------------------------'
 
 
-for item in listdir(join(split(realpath(__file__))[0], "cogs")):
-    if item.endswith(f'.py'):
-        client.load_extension(f'cogs.{item[:-3]}')
+if __name__ == '__main__':
+	for extension in settings.extensions.extensions:
+		try:
+			client.load_extension(extension)
+		except Exception as e:
+			print(f'{line}\n[!] Не удалось загрузить модуль {extension}.')
+			print(f'[!] {e}\n{line}')
+		else:
+			print(f'[!] Модуль {extension} успешно загружен.')
 
-client.run(settings['TOKEN'])
+client.run(config.TOKEN)
 
 
-# C:/Users/алексей/AppData/Local/Programs/Python/Python38-32/python.exe "c:/файлы/Python Projects/MrSphericalBot/FullVersion/main.py"
+# python "E:/Python Projects/MrSphericalBot/FullVersion/main.py"
