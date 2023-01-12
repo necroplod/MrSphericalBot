@@ -1,16 +1,23 @@
 from os import listdir
 from os.path import join, realpath, split, splitext
-from dislash import InteractionClient
-
 
 from discord import Intents
 from discord.ext import commands
+from discord.ext import tasks
 from config import settings
+
 
 client = commands.Bot(command_prefix = ['s.', 'S.'], intents=Intents.all())
 client.remove_command('help')
-InteractionClient(client)
 
+@tasks.loop(minutes=120)
+async def deadchat():
+    channel = client.get_channel(989588810948018258)
+    await channel.send("<@&952530469700911118>")
+
+@client.event
+async def on_ready():
+    deadchat.start()
 
 
 for item in listdir(join(split(realpath(__file__))[0], "cogs")):
