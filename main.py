@@ -1,3 +1,5 @@
+import datetime
+
 from os import listdir
 from os.path import join, realpath, split, splitext
 
@@ -10,10 +12,28 @@ from config import settings
 client = commands.Bot(command_prefix = ['s.', 'S.'], intents=Intents.all())
 client.remove_command('help')
 
-@tasks.loop(minutes=120)
+@tasks.loop(minutes=1)
 async def deadchat():
-    channel = client.get_channel(989588810948018258)
-    await channel.send("<@&952530469700911118>")
+    hour = datetime.datetime.today().strftime("%H")
+    sleep = [
+            21,
+            23,
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+            ]
+
+    if hour in sleep:
+        return
+    else:
+        channel = client.get_channel(997245771290247240)
+        await channel.send("<@&997425504485384253>")
 
 @client.event
 async def on_ready():

@@ -11,6 +11,7 @@ class info(commands.Cog):
       emb = discord.Embed(title = 'ДОСТУПНЫЕ КОМАНДЫ:', description = ' ', colour = discord.Color.red())
       emb.set_author(name = ctx.author.name, icon_url = ctx.author.avatar_url)
       emb.add_field(name = 'Информация', value = f'`c.help` `c.stats`', inline=False)
+      emb.add_field(name = 'Веселье', value = f'`c.catkdk`', inline=False)
       await ctx.send(embed=emb)
 
     @commands.command()

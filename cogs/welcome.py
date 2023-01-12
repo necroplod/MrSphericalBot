@@ -9,9 +9,9 @@ class welcome(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        welcome = self.client.get_channel(952530469751255049)
+        welcome = self.client.get_channel(997425613830897674)
         rules = f"<#959770387204415498>"
-        verify = f"<#959752658313437274>"
+        verify = f"<#997425580607819840>"
 #        navigation = f"<#959774875642372096>"
 #        embed = discord.Embed(title=' ', color=0x2ecc71, description=f'''{member.mention}, Добро Пожаловать на сервер **Мистер Сферический**!
 #
@@ -20,14 +20,14 @@ class welcome(commands.Cog):
         embed = discord.Embed(title=' ', color=0x2ecc71, description=f'''{member.mention}, Добро Пожаловать на сервер **Мистер Сферический**!
         
         Не забудь прочитать {rules} и пройти верификацию в {verify}!''')
-        embed.set_image(url="https://cdn.discordapp.com/attachments/959385309374713896/977190213816287313/unknown.png?size=4096")
+        embed.set_image(url="https://i.ytimg.com/vi/nVzqh0fTARU/hqdefault.jpg")
         await welcome.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        welcome = self.client.get_channel(952530469751255049)
+        welcome = self.client.get_channel(997425613830897674)
         embed = discord.Embed(title=' ', color=0x2ecc71, description=f'**{member}** Покинул наш сервер :(')
-        embed.set_image(url="https://cdn.discordapp.com/attachments/959385309374713896/977190225862361099/unknown.jpeg?size=4096")
+        embed.set_image(url="https://i.ytimg.com/vi/F_e2eknfMbU/hqdefault.jpg")
         await welcome.send(embed=embed)
 
 
