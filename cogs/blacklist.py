@@ -40,6 +40,7 @@ class blacklist(commands.Cog):
                 description = f"Пользователь {member} попытался зайти на сервер!",
                 color = 0xc01919
             )
+            embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} © Created by blackhome7 | Все права защищены')
             await notify.send(embed=embed)
 
 

@@ -30,6 +30,7 @@ class suggest(commands.Cog):
                         color = 0xfc652c
                     )
                     embed.set_author(name = f"Идея от {message.author.display_name}", icon_url = message.author.avatar_url)
+                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} © Created by blackhome7')
                     await message.delete()
                     msg1 = await channel.send(embed=embed)
 

@@ -21,6 +21,7 @@ class welcome(commands.Cog):
         
         Не забудь прочитать {rules} и пройти верификацию в {verify}!''')
         embed.set_image(url="https://i.ytimg.com/vi/nVzqh0fTARU/hqdefault.jpg")
+        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} © Created by blackhome7 | Все права защищены')
         await welcome.send(embed=embed)
 
     @commands.Cog.listener()
@@ -28,6 +29,7 @@ class welcome(commands.Cog):
         welcome = self.client.get_channel(997425613830897674)
         embed = discord.Embed(title=' ', color=0x2ecc71, description=f'**{member}** Покинул наш сервер :(')
         embed.set_image(url="https://i.ytimg.com/vi/F_e2eknfMbU/hqdefault.jpg")
+        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} © Created by blackhome7 | Все права защищены')
         await welcome.send(embed=embed)
 
 

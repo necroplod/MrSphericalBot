@@ -17,6 +17,7 @@ class dev(commands.Cog):
             description = f"Ког **{extensions}** был успешно загружен!",
             color = 0x93ff15
         )
+        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} © Created by blackhome7 | Все права защищены')
         await ctx.send(embed=embed)
 
     @commands.command(hidden=True)
@@ -28,6 +29,7 @@ class dev(commands.Cog):
             description = f"Ког **{extensions}** был успешно отгружен!",
             color = 0xf64c6e
         )
+        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} © Created by blackhome7 | Все права защищены')
         await ctx.send(embed=embed)
 
     @commands.command(hidden=True)
@@ -41,6 +43,7 @@ class dev(commands.Cog):
             color = 0xf64c6e
             
         )
+        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} © Created by blackhome7 | Все права защищены')
         await ctx.send(embed=embed)
 
     @commands.command(hidden=True)
