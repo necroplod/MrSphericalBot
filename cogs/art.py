@@ -40,6 +40,7 @@ class art(commands.Cog):
             if on_click.component.id == 'start':
                 archive_art = self.client.get_channel(1006834087031488602)
                 test = self.client.get_channel(997425610207006800)
+                general_art = self.client.get_channel(997425650904338453)
                 async for art in general_art.history(limit = None):
                     for attachment in art.attachments:  
                         archive_art = self.client.get_channel(1006834087031488602)                     
