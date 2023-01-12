@@ -1,0 +1,35 @@
+import discord
+from discord.ext import commands
+
+class welcome(commands.Cog):
+
+    def __init__(self, client):
+        self.client = client
+
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        welcome = self.client.get_channel(959385309374713896)
+        rules = f"<#959770387204415498>"
+        verify = f"<#959752658313437274>"
+        navigation = f"<#959774875642372096>"
+        embed = discord.Embed(title=' ', color=0x2ecc71, description=f'''{member.mention}, Добро Пожаловать на сервер **Мистер Сферический**!
+
+        Вот тебе каналы для ознакомления: {rules}, {navigation}, но перед этим пройди верификацию в {verify}!''')
+        embed.set_image(url="https://yt3.ggpht.com/AQ0shvPkVLBNUjMmlUjQhnMX0ruQcsQRRMEirax2mPYJX6o1RwNfH8o-Nh-YBevOTPBRBRmGWJtk1A=s640-nd-v1")
+        await welcome.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        welcome = self.client.get_channel(959385309374713896)
+        embed = discord.Embed(title=' ', color=0x2ecc71, description=f'**{member}** Покинул наш сервер :(')
+        embed.set_image(url="https://yt3.ggpht.com/XQN3Uzm0oUBPWfw-4kOoaG-nMuzcKFlLrXjdcAHQznvArpCJZAoBYQJEe5A2v9W4QoVaba4Nt6mg=s800-nd-v1")
+        await welcome.send(embed=embed)
+
+
+
+
+
+
+def setup(client):
+    client.add_cog(welcome(client))
