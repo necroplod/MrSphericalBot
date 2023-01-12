@@ -1,3 +1,4 @@
+import datetime
 import discord
 import dislash
 
@@ -43,6 +44,13 @@ class dev(commands.Cog):
             
         )
         await ctx.send(embed=embed)
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def shutdown(self, ctx):
+
+        await ctx.send(f"```Shutdown {self.client.user.name} : {str(datetime.datetime.now())}```")
+        await self.client.close()
 
 def setup(client):
     client.add_cog(dev(client))
