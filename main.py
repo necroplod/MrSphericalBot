@@ -7,10 +7,12 @@ from discord import Intents
 from discord.ext import commands
 from discord.ext import tasks
 from config import settings
+from dislash import InteractionClient
 
 
 client = commands.Bot(command_prefix = ['s.', 'S.'], intents=Intents.all())
 client.remove_command('help')
+InteractionClient(client)
 
 """
 @tasks.loop(minutes=60)

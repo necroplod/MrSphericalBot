@@ -39,10 +39,10 @@ class art(commands.Cog):
         for _ in range(1):
             if on_click.component.id == 'start':
                 archive_art = self.client.get_channel(1006834087031488602)
-                general_art = self.client.get_channel(997425650904338453)
                 test = self.client.get_channel(997425610207006800)
                 async for art in general_art.history(limit = None):
-                    for attachment in art.attachments:                       
+                    for attachment in art.attachments:  
+                        archive_art = self.client.get_channel(1006834087031488602)                     
                         embed = discord.Embed(
                             title = "",
                             description = "",
