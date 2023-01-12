@@ -12,6 +12,7 @@ from config import settings
 client = commands.Bot(command_prefix = ['s.', 'S.'], intents=Intents.all())
 client.remove_command('help')
 
+"""
 @tasks.loop(minutes=60)
 async def deadchat():
     hour = datetime.datetime.today().strftime("%H")
@@ -38,6 +39,7 @@ async def deadchat():
 @client.event
 async def on_ready():
     deadchat.start()
+"""
 
 
 for item in listdir(join(split(realpath(__file__))[0], "cogs")):
