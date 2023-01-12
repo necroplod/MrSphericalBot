@@ -53,7 +53,7 @@ class art(commands.Cog):
                         embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} © Created by blackhome7')
                         embed.set_author(name = f"Арт от {art.author.display_name}", icon_url = art.author.avatar_url)
                         embed.set_image(url = f"{attachment.url}")
-                        await archive_arts.send(embed=embed)
+                        await archive_art.send(embed=embed)
             if on_click.component.id == 'add':
                 archive_arts = self.client.get_channel(1006834087031488602)
                 general_art = self.client.get_channel(997425650904338453)

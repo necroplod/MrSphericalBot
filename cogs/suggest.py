@@ -2,10 +2,7 @@ import discord
 import time
 from discord.ext import commands
 
-suggest_ch = [
-          997425648538746950, # 💎・предложения
-          997425707217064016 # ✅・предложения
-          ]
+suggest_ch = [000000000000000000, 000000000000000000]
 
 class suggest(commands.Cog):
 
