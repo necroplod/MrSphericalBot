@@ -1,6 +1,5 @@
 import datetime
 import discord
-import dislash
 
 from dislash import ActionRow, Button, ButtonStyle
 from discord.ext import commands
