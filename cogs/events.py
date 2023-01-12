@@ -14,7 +14,7 @@ class events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.channel.id == 952530470195834884 and message.attachments and message.guild.id == 952530469684146186:
+        if message.channel.id == 952610624595177502 and message.guild.id == 952530469684146186:
             await message.add_reaction('👍')
             await message.add_reaction('👎')    
         else:

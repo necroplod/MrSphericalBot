@@ -17,3 +17,5 @@ for item in listdir(join(split(realpath(__file__))[0], "cogs")):
 
 client.run(settings['TOKEN'])
 
+
+# C:/Users/алексей/AppData/Local/Programs/Python/Python38-32/python.exe "c:/файлы/Python Projects/MrSphericalBot/main.py"

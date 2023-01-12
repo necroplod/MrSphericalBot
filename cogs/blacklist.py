@@ -1,20 +1,25 @@
 import discord
-import asyncio
 from discord.ext import commands
 
-bans = [000000000000000000000]
+bans = [
+       972546611685261312, # atom bot
+       962808419998388234, # Сфер-помощник
+       954046288104685568, # sevaatom
+       489082344159051786, # atomseva
+       932611419197816832, # Военкомат
+       933030522186264596, # BigSmoke
+       932541542219006013, # Walter_FS
+       821762235243954216, # kjkszpj
+       858376307321733130] # valik505🇾🇪
 
-class auto_ban(commands.Cog):
+class blacklist(commands.Cog):
 
     def __init__(self, client):
         self.client = client
 
-
-
     @commands.Cog.listener()
     async def on_member_join(self, member):
 
-        print(f'{member} - {member.id} Join')
 
         if member.id not in bans:
             return
@@ -34,4 +39,4 @@ class auto_ban(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(auto_ban(client))
+    client.add_cog(blacklist(client))
