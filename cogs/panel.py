@@ -6,7 +6,8 @@ from discord.ext import commands
 from discord.ui.view import View
 from discord.ui.modal import Modal
 
-class auth_panel(Modal, title = '🎆 | Аутентификация'):
+global author
+class Auth_panel(Modal, title = '🎆 | Аутентификация'):
     login = discord.ui.TextInput(
         label = 'Логин',
         placeholder = 'KrytoyAdmin2009 :)'
@@ -35,12 +36,12 @@ class auth_panel(Modal, title = '🎆 | Аутентификация'):
                     color=0xcdc9a5
                 )
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-                await interaction.response.send_message(embed=embed, view = main_panel())
+                await interaction.response.send_message(embed=embed, view = Main_panel())
             else:
                 await interaction.response.send_message('Неверный пароль!')
         else:
             await interaction.response.send_message('Неверный логин!')
-class cogs_panel(Modal, title = '🎲 | Панель управления'):
+class Cogs_panel(Modal, title = '🎲 | Панель управления'):
     cog = discord.ui.TextInput(label = 'Имя кога')
     action = discord.ui.TextInput(
         label = 'Действие',
@@ -51,15 +52,34 @@ class cogs_panel(Modal, title = '🎲 | Панель управления'):
         action = action.lower()
         if action == 'load':
             async def cogs_():
-                await discord.ext.commands.Botload_extension(name = cog)
+                await discord.ext.commands.Bot.load_extension(name = cog)
         if action == 'reload':
             async def cogs_():
                 await discord.ext.commands.Bot.unload_extension(name = cog)
-                await discord.ext.commands.Botload_extension(name = cog)
+                await discord.ext.commands.Bot.load_extension(name = cog)
         if action == 'unload':
             async def cogs_():
                 await discord.ext.commands.Bot.unload_extension(name = cog)
-class bans_panel(Modal, title = '🎲 | Панель управления'):
+class Handlers_panel(Modal, title = '🎲 | Панель управления'):
+    handler = discord.ui.TextInput(label = 'Имя хэндлера')
+    action = discord.ui.TextInput(
+        label = 'Действие',
+        placeholder = 'Действия: load, unload, reload')
+    async def on_submit(self, interaction: discord.Interaction):
+        handlers = f'handlers.{self.handler.value}'
+        action = self.action.value
+        action = action.lower()
+        if action == 'load':
+            async def cogs_():
+                await discord.ext.commands.Bot.load_extension(name = handlers)
+        if action == 'reload':
+            async def cogs_():
+                await discord.ext.commands.Bot.unload_extension(name = handlers)
+                await discord.ext.commands.Bot.load_extension(name = handlers)
+        if action == 'unload':
+            async def cogs_():
+                await discord.ext.commands.Bot.unload_extension(name = handlers)
+class Bans_panel(Modal, title = '🎲 | Панель управления'):
     one = discord.ui.TextInput(label = 'ID')
     two = discord.ui.TextInput(label = 'ID')
     three = discord.ui.TextInput(label = 'ID')
@@ -87,26 +107,41 @@ class bans_panel(Modal, title = '🎲 | Панель управления'):
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
                 await logs.send(embed=embed)
 
-class main_panel(discord.ui.View):
+class Main_panel(discord.ui.View):
     def __init__(self, *, timeout=10):
+        self.author = author
         super().__init__(timeout=timeout)
 
     @discord.ui.button(emoji='🪁', style=discord.ButtonStyle.green, label = 'Управлять когами', row = 1)
     async def cogs(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.send_modal(cogs_panel())
+        if interaction.user != self.author:
+            await interaction.response.send_message(content="Эта кнопка была вызвана другим пользователем!", ephemeral=True)
+        await interaction.response.send_modal(Cogs_panel())
 
-    @discord.ui.button(emoji='🦺', style=discord.ButtonStyle.green, label = 'Бан пользователей', row = 1)
+    @discord.ui.button(emoji='🎋', style=discord.ButtonStyle.grey, label = 'Управлять хэндлерами', row = 1)
+    async def handlers(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user != self.author:
+            await interaction.response.send_message(content="Эта кнопка была вызвана другим пользователем!", ephemeral=True)
+        await interaction.response.send_modal(Handlers_panel())
+
+    @discord.ui.button(emoji='🦺', style=discord.ButtonStyle.green, label = 'Бан пользователей', row = 0)
     async def bans(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.send_modal(bans_panel())
+        if interaction.user != self.author:
+            await interaction.response.send_message(content="Эта кнопка была вызвана другим пользователем!", ephemeral=True)
+        await interaction.response.send_modal(Bans_panel())
 
-class auth_start(discord.ui.View):
+class Auth_start(discord.ui.View):
     def __init__(self, *, timeout=60):
+        self.author = author
         super().__init__(timeout=timeout)
 
     @discord.ui.button(emoji='🥊', style=discord.ButtonStyle.blurple, label = 'Авторизация')
     async def auth(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.send_modal(auth_panel())
+        if interaction.user != self.author:
+            await interaction.response.send_message(content="Эта кнопка была вызвана другим пользователем!", ephemeral=True)
+        await interaction.response.send_modal(Auth_panel())
 class panel(commands.Cog):
+
     def __init__(self, client):
         self.client = client
 
@@ -119,7 +154,8 @@ class panel(commands.Cog):
             color = 0xcdc9a5
         )
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
-        await ctx.send(embed=embed, view = auth_start())
+        author = ctx.author
+        await ctx.send(embed=embed, view = Auth_start())
 
 async def setup(client):
     await client.add_cog(panel(client))

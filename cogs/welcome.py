@@ -13,8 +13,13 @@ class welcome(commands.Cog):
     async def on_member_join(self, member):
         welcome = self.client.get_channel(settings.channels.welcome)
         rules = f"<#959770387204415498>"
-        embed = discord.Embed(title=' ', color=0x2ecc71, description=f'''{member.mention}, Добро Пожаловать на сервер **Мистер Сферический**!       
-        Не забудь прочитать {rules}!''')
+        embed = discord.Embed(
+            title='',
+            description=f'''{member.mention}, Добро Пожаловать на сервер **Мистер Сферический**!       
+            Не забудь прочитать {rules}!''',
+            color=0x2ecc71
+        )
+
         embed.set_image(url="https://i.ytimg.com/vi/nVzqh0fTARU/hqdefault.jpg")
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await welcome.send(embed=embed)
@@ -22,7 +27,11 @@ class welcome(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         welcome = self.client.get_channel(settings.channels.welcome)
-        embed = discord.Embed(title=' ', color=0x2ecc71, description=f'**{member}** Покинул наш сервер :(')
+        embed = discord.Embed(
+            title='',
+            description=f'**{member}** Покинул наш сервер :(',
+            color = 0x2ecc71
+        )
         embed.set_image(url="https://i.ytimg.com/vi/F_e2eknfMbU/hqdefault.jpg")
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await welcome.send(embed=embed)

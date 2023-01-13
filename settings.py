@@ -1,7 +1,7 @@
 class channels:
     welcome = 0000000000000000000
     bugs = 0000000000000000000
-    suggest = [0000000000000000000, 0000000000000000000, 0000000000000000000]
+    suggest = [0000000000000000000, 0000000000000000000, 00000000000000000000000000000000000000]
     todo = 0000000000000000000
     anonymous = 0000000000000000000
     autoban = 0000000000000000000
@@ -24,14 +24,16 @@ class misc:
 class blacklist:
     bans = []
 class extensions:
-    extensions = [
+    cogs = [
         'cogs.adm',
         'cogs.blacklist',
         'cogs.dev',
-        'cogs.chat',
-        'cogs.events',
         'cogs.fun',
         'cogs.info',
         'cogs.suggest',
         'cogs.welcome'
-]
+    ]
+    handlers = [
+        'handlers.error',
+        'handlers.logs'
+    ]

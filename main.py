@@ -1,6 +1,7 @@
 import config
 import settings
 
+import asyncio
 import discord
 from discord import Intents
 from discord.ext import commands
@@ -19,7 +20,7 @@ class Setup(commands.Bot):
 	
 	async def setup_hook(self):
 		self.main()
-		for extension in settings.extensions.extensions:
+		for extension in settings.extensions.cogs:
 			try:
 				await self.load_extension(extension)
 			except Exception as e:
@@ -27,6 +28,15 @@ class Setup(commands.Bot):
 				print(f'[!] {e}\n{self.line}')
 			else:
 				print(f'[!] Модуль {extension} успешно загружен.')
+		print(self.line)
+		for extension in settings.extensions.handlers:
+			try:
+				await self.load_extension(extension)
+			except Exception as e:
+				print(f'{self.line}\n[!] Не удалось загрузить хендлер {extension}.')
+				print(f'[!] {e}\n{self.line}')
+			else:
+				print(f'[!] Хендлер {extension} успешно загружен.')
 
 
 client = Setup(
