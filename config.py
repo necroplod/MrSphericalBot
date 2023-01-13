@@ -1,8 +1,13 @@
-settings = {
-	'TOKEN': '',
-	'NAME BOT': '',
-	'ID': '',
-	'PREFIX': 's.',
-	'OWNER': '',
-	'OWNER NAME': ''
-}
+CANARY = False
+
+class token:
+    MAIN = ''
+    CANARY = ''
+class prefix:
+    MAIN = ['s.', 'S.']
+    CANARY = ['c.', 'C.']
+class Panel:
+    login = ''
+    pwds = []
+
+

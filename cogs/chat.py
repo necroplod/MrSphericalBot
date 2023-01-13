@@ -14,7 +14,7 @@ class rp(commands.Cog):
     async def on_message(self, message):
         channel = self.client.get_channel(message.channel.id)
 
-        if message.channel.id == settings.channels.rp:
+        if message.channel.id == settings.channels.anonymous:
             if message.author.bot:
                 return
             else:
@@ -27,13 +27,13 @@ class rp(commands.Cog):
                         timestamp = message.created_at,
                         color = 0x6ae8cd
                     )
-                    embed_raw.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                    embed_raw.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await message.delete()
                     msg1 = await channel.send(embed=embed_raw)
                     authorid = message.author.id
                     msgid = msg1.id
                     ch = message.channel.id
-                    chksum = settings.misc.rp
+                    chksum = settings.misc.chksum
 
                     code_raw = f'''[id]{authorid}[id]
 [msg]{msgid}[msg]
@@ -52,7 +52,7 @@ class rp(commands.Cog):
                         timestamp = message.created_at,
                         color = 0x6ae8cd
                     )
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                    embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await msg1.edit(embed=embed)
 
         else:
@@ -79,7 +79,7 @@ class rp(commands.Cog):
             dscrpt = re.search(r'\```(.*)\```', dscrpt_raw, re.DOTALL).group(1)
             
             def chksum(self, hash):
-                if settings.misc.rp in hash:
+                if settings.misc.chksum in hash:
                     return True
                 else:
                     return False  
@@ -92,7 +92,7 @@ class rp(commands.Cog):
                     **Сообщение:** `{dscrpt}` | `{msg}`''',
                     color = 0x51a944
                     )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                 await ctx.send(embed=embed)
             else:           
                 embed = discord.Embed(
@@ -100,7 +100,7 @@ class rp(commands.Cog):
                     description = '**Контрольная сумма неверна, возможно код поврежден.**',
                     color = 0x490909
                 )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                 await ctx.send(embed=embed)
         except Exception as e:
                 embed = discord.Embed(
@@ -108,7 +108,7 @@ class rp(commands.Cog):
                     description = f'''**Произошла ошибка, скорее всего оригинальное сообщение не было найдено.**\n\n**Ошибка:** ||{e}||''',
                     color = 0x51a944
                 )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                 await ctx.send(embed=embed)
 
         """
@@ -127,7 +127,7 @@ class rp(commands.Cog):
                     **ID Канала:** {ch}''',
                     color = 0x51a944
                 )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                 await ctx.send(embed=embed)
             else:
                 embed = discord.Embed(
@@ -135,7 +135,7 @@ class rp(commands.Cog):
                     description = '**Контрольная сумма неверна, возможно код поврежден.**',
                     color = 0x490909
                 )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                 await ctx.send(embed=embed)
         else:
 """
@@ -143,5 +143,5 @@ class rp(commands.Cog):
 
 
 
-def setup(client):
-    client.add_cog(rp(client))
+async def setup(client):
+    await client.add_cog(rp(client))

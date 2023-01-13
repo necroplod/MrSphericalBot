@@ -1,4 +1,6 @@
+import config
 import settings
+import asyncio
 
 import datetime
 import discord
@@ -14,10 +16,21 @@ class events(commands.Cog):
         print(" ")
         print(f'----------------------------------------------------')
         print(f"| Logged on as MrSphericalBot - {self.client.user.id} |")
+        print(f"| Canary: {config.CANARY}                                    |")
         print(f"| Discord.py Version: {discord.__version__}                        |")
         print(f'----------------------------------------------------')
-        print(" ")    
-        await self.client.change_presence(status=discord.Status.online, activity=discord.Streaming(name=f's.help', url='https://www.youtube.com/c/%D0%9C%D0%B8%D1%81%D1%82%D0%B5%D1%80%D0%A1%D1%84%D0%B5%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9'))
+        print(" ")
+        await asyncio.sleep(3)
+        logs = self.client.get_channel(1040706608155598928)
+        embed = discord.Embed(
+            title = '🎲 | Панель Управления',
+            description = f'''
+            **• Действие:** Включение бота
+            **• Время:** {datetime.datetime.now()}''',
+            color = 0xcdc9a5
+        )
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await logs.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -27,7 +40,7 @@ class events(commands.Cog):
                 description = f'**Команда не найдена или введена неправильно!**', 
                 color = 0xDB0F0F
             )
-            embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+            embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
             await ctx.send(embed=embed, delete_after=5)
         if isinstance(error, commands.errors.MissingPermissions):
             embed = discord.Embed(
@@ -35,7 +48,7 @@ class events(commands.Cog):
                 description = "**У вас не хватает прав для использование этой команды!**",
                 color = discord.Color.red()
             )
-            embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+            embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
             await ctx.send(embed = embed, delete_after=5)
         if isinstance(error, commands.errors.CommandInvokeError):
             embed = discord.Embed(
@@ -43,7 +56,7 @@ class events(commands.Cog):
                 description = "**Произошла техническая неполадка в коде, данные об баге были отправлены разработчику.**",
                 color=discord.Color.red()
             )
-            embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+            embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
             await ctx.send(embed = embed, delete_after=5)
 
     @commands.Cog.listener()
@@ -60,8 +73,8 @@ class events(commands.Cog):
                 **• Полное Сообщение:** ```{ctx.message}```''',
                 color = 0xdaab39
             )
-            embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+            embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
             await logs.send(embed=embed)
 
-def setup(client):
-    client.add_cog(events(client))
+async def setup(client):
+    await client.add_cog(events(client))

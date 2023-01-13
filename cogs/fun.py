@@ -22,7 +22,7 @@ class fun(commands.Cog):
         embed = discord.Embed()
         url = random.choice(catkdk)
         embed.set_image(url=url)
-        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -30,15 +30,15 @@ class fun(commands.Cog):
         embed = discord.Embed()
         url = random.choice(kdk)
         embed.set_image(url=url)
-        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await ctx.send(embed=embed)
 
     @commands.command()
     async def kdkeat(self, ctx):
         embed = discord.Embed()
         embed.set_image(url="https://cdn.discordapp.com/attachments/997425610207006800/1007220298090807317/c63214c00e4d29c0.gif")
-        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await ctx.send(embed=embed)
 
-def setup(client):
-    client.add_cog(fun(client))
+async def setup(client):
+    await client.add_cog(fun(client))

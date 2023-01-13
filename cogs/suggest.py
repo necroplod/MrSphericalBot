@@ -1,5 +1,4 @@
 import discord
-import time
 import settings
 from discord.ext import commands
 
@@ -19,6 +18,8 @@ class suggest(commands.Cog):
             else:
                 if message.content.startswith('^'):
                     return
+                if message.content.startswith(':'):
+                    return
                 else:
                     embed = discord.Embed(
                         title = "",
@@ -26,8 +27,8 @@ class suggest(commands.Cog):
                         timestamp = message.created_at,
                         color = 0xfc652c
                     )
-                    embed.set_author(name = f"Идея от {message.author.display_name}", icon_url = message.author.avatar_url)
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                    embed.set_author(name = f"Идея от {message.author.display_name}", icon_url = message.author.avatar.url)
+                    embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await message.delete()
                     msg1 = await channel.send(embed=embed)
                     if message.channel.id != settings.channels.todo:
@@ -39,5 +40,5 @@ class suggest(commands.Cog):
         else:
             return
 
-def setup(client):
-    client.add_cog(suggest(client))
+async def setup(client):
+    await client.add_cog(suggest(client))

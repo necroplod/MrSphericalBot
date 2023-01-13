@@ -2,7 +2,6 @@ import settings
 
 import discord
 from discord.ext import commands
-from dislash import ActionRow, Button, ButtonStyle
 
 class blacklist(commands.Cog):
 
@@ -21,7 +20,7 @@ class blacklist(commands.Cog):
                 description = f"Пользователь `{member.name}#{member.discriminator} | {member.id}` попытался зайти на сервер!",
                 color = 0xc01919
             )
-            embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+            embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
             await notify.send(embed=embed)
     """
     @commands.command()
@@ -32,7 +31,7 @@ class blacklist(commands.Cog):
                 description = f"**У вас нет доступа к черному списку!**",
                 color = 0xc01919
             )
-            embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+            embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
             await ctx.send(embed=embed)
         elif ctx.message.author.id in config['adm']:        
             embed = discord.Embed(
@@ -40,7 +39,7 @@ class blacklist(commands.Cog):
                 description = f"",
                 color = 0xc01919
             )
-            embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+            embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
             
             power = ActionRow(
                 Button(
@@ -103,7 +102,7 @@ class blacklist(commands.Cog):
                         description = f"\n".join([id for ban in config['list']]),
                         color = 0xc01919
                     )
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                    embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await on_click.respond(embed=embed)
                 if on_click.component.id == 'add':
                     embed = discord.Embed(
@@ -111,7 +110,7 @@ class blacklist(commands.Cog):
                         description = "*Введите ID Пользователя!*",
                         color = 0xc01919
                     )
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                    embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await on_click.respond(embed=embed)
                     id = await self.client.wait_for('message', check=lambda msg: msg.author == ctx.author)
                     bans = config.list('list')
@@ -137,7 +136,7 @@ class blacklist(commands.Cog):
                         description = f"**Пользователь был успешно добавлен в черный список!**",
                         color = 0xc01919
                     )
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                    embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await ch.send(embed=embed)
                 if on_click.component.id == 'remove':
                     embed = discord.Embed(
@@ -145,7 +144,7 @@ class blacklist(commands.Cog):
                         description = "*Введите ID Пользователя!*",
                         color = 0xc01919
                     )
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                    embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await on_click.respond(embed=embed)
                     id = await self.client.wait_for('message', check=lambda msg: msg.author == ctx.author)
                     if id in ...:
@@ -154,7 +153,7 @@ class blacklist(commands.Cog):
                             description = f"**Пользователь был успешно удален из черного списка!**",
                             color = 0xc01919
                         )
-                        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                         await ch.send(embed=embed)
                     else:
                         embed = discord.Embed(
@@ -162,7 +161,7 @@ class blacklist(commands.Cog):
                             description = f"**Данный пользователь не находится в черном списке!**",
                             color = 0x490909
                         )
-                        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                         await ch.send(embed=embed)
 
                 
@@ -185,7 +184,7 @@ class blacklist(commands.Cog):
                         description = f"**Черный список успешно включен!**",
                         color = 0xc01919
                     )
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                    embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await ch.send(embed=embed)
                 if on_click.component.id == 'off':
                     with open(db) as mode:
@@ -206,8 +205,8 @@ class blacklist(commands.Cog):
                         description = f"**Черный список успешно выключен!**",
                         color = 0xc01919
                     )
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+                    embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await ch.send(embed=embed)"""
 
-def setup(client):
-    client.add_cog(blacklist(client))
+async def setup(client):
+    await client.add_cog(blacklist(client))

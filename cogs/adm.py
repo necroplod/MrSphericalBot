@@ -5,8 +5,108 @@ import asyncio
 import random
 import re
 from discord.ext import commands
-from dislash import InteractionClient, ActionRow, Button, ButtonStyle
+from discord.ui.view import View
+from discord.ui.modal import Modal
 
+class art_id(Modal, title = '🎇 | ID'):
+    msg = discord.ui.TextInput(
+        label = 'ID сообщения'
+    )
+    async def on_submit(self, interaction: discord.Interaction):
+        general_art = discord.utils.get(interaction.guild.channels, name=settings.channels.art)
+        archive_art = discord.utils.get(interaction.guild.channels, name=settings.channels.archive_art)
+        msg = await general_art.fetch_message(int(self.msg.value))
+        attachment = msg.attachments[0]
+
+        embed = discord.Embed(
+            title = "",
+            description = "",
+            timestamp = msg.created_at,
+            color = msg.author.color
+        )
+        embed.set_author(name = f"Арт от {msg.author.display_name}", icon_url = msg.author.avatar.url)
+        embed.set_image(url = f"{attachment.url}")
+        await archive_art.send(embed=embed)
+class art(discord.ui.View):
+        def __init__(self, *, timeout=180):
+            super().__init__(timeout=timeout)
+            
+        @discord.ui.button(emoji = '♻', style = discord.ButtonStyle.green, disabled = True)
+        async def start(self, interaction: discord.Interaction, button: discord.ui.Button):
+            archive_art = discord.utils.get(interaction.guild.channels, name=settings.channels.archive_art)
+            general_art = discord.utils.get(interaction.guild.channels, name=settings.channels.art)
+            async for art in general_art.history(limit = None):
+                for attachment in art.attachments:            
+                    embed = discord.Embed(
+                        title = "",
+                        description = "",
+                        timestamp = art.created_at,
+                        color = art.author.color
+                    )
+                    embed.set_author(name = f"Арт от {art.author.display_name}", icon_url = art.author.avatar.url)
+                    embed.set_image(url = f"{attachment.url}")
+                    await archive_art.send(embed=embed)
+        @discord.ui.button(emoji = '🎯', style = discord.ButtonStyle.blurple)
+        async def add(self, interaction: discord.Interaction, button: discord.ui.Button):
+            await interaction.response.send_modal(art_id())
+
+        @discord.ui.button(emoji = '🗑', style = discord.ButtonStyle.blurple, disabled = True)
+        async def clear(self, interaction: discord.Interaction, button: discord.ui.Button):
+            archive_art = discord.utils.get(interaction.guild.channels, name=settings.channels.archive_art)
+            await archive_art.purge(limit = None)
+            embed = discord.Embed(
+                title = "🏆 | Архив Артов",
+                description = "*Архив успешно очищен!*",
+                color = 0x1ce091
+            )
+            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+            await interaction.response.edit_message(self=view, embed=embed)
+class archive(discord.ui.View):
+        def __init__(self):
+            super().__init__()
+            
+        @discord.ui.button(emoji = '🔓', style = discord.ButtonStyle.red, label = 'Отмена')
+        async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+            embed = discord.Embed(
+                title = "📚 | Архив Каналов",
+                description = "<a:768563657390030971:1041076662546219168> **Действие было отменено пользователем**",
+                color = 0x674ea7
+            )
+            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+            await interaction.response.edit_message(view=None, embed=embed)
+        @discord.ui.button(emoji = '🎟', style = discord.ButtonStyle.blurple, label = 'Тикет')
+        async def ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
+            category = discord.utils.get(interaction.guild.channels, name=settings.channels.ticket_archive)
+            embed = discord.Embed(
+                title = "📚 | Архив Каналов",
+                description = "<a:768563657390030971:1041076662546219168> **Перемещение тикета в архив....**",
+                color = 0x674ea7
+            )
+            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+            await interaction.response.edit_message(view=None, embed=embed)
+            ch = interaction.channel
+            await ch.edit(
+                sync_permissions = True,
+                category = category,
+                reason = f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
+            )
+        @discord.ui.button(emoji = '📚', style = discord.ButtonStyle.blurple, label = 'Канал')
+        async def channel(self, interaction: discord.Interaction, button: discord.ui.Button):
+            category = discord.utils.get(interaction.guild.channels, name=settings.channels.main_archive)
+            embed = discord.Embed(
+                title = "📚 | Архив Каналов",
+                description = "<a:768563657390030971:1041076662546219168> **Перемещение канала в архив....**",
+                color = 0x674ea7
+            )
+            embed.set_footer(icon_url = settings.misc.avatar_url, text = settings.misc.footer)
+            await interaction.response.edit_message(view=None, embed=embed)
+            ch = interaction.channel
+            await ch.edit(
+                name = f'{interaction.channel.name}_архив',
+                sync_permissions = True,
+                category = category,
+                reason = f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
+            )
 class adm(commands.Cog):
 
     def __init__(self, client):
@@ -20,80 +120,8 @@ class adm(commands.Cog):
             description = "",
             color = 0x81d8d0
         )
-        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
-        row = ActionRow(
-            Button(
-                style = ButtonStyle.green,
-                custom_id = 'start_',
-                disabled = True,
-                emoji = '♻'
-            ),
-            Button(
-                style = ButtonStyle.blurple,
-                custom_id = 'add',
-                emoji = '🎯'
-            ),
-            Button(
-                style = ButtonStyle.red,
-                custom_id = 'clear_',
-                disabled = True,
-                emoji = '🗑'
-            )
-        )
-        msg = await ctx.send(embed = embed, components=[row])
-        on_click = await msg.wait_for_button_click(timeout = 120)
-        ch = self.client.get_channel(ctx.channel.id)
-        for _ in range(1):
-            if on_click.component.id == 'start':
-                archive_art = self.client.get_channel(1006834087031488602)
-                general_art = self.client.get_channel(997425650904338453)
-                async for art in general_art.history(limit = None):
-                    for attachment in art.attachments:  
-                        archive_art = self.client.get_channel(1006834087031488602)                     
-                        embed = discord.Embed(
-                            title = "",
-                            description = "",
-                            timestamp = art.created_at,
-                            color = art.author.color
-                        )
-                        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
-                        embed.set_author(name = f"Арт от {art.author.display_name}", icon_url = art.author.avatar_url)
-                        embed.set_image(url = f"{attachment.url}")
-                        await archive_art.send(embed=embed)
-            if on_click.component.id == 'add':
-                archive_arts = self.client.get_channel(1006834087031488602)
-                general_art = self.client.get_channel(997425650904338453)
-                embed = discord.Embed(
-                    title = "🏆 | Архив Артов",
-                    description = "*Введите ID сообщения!*",
-                    color = 0x1ce091
-                )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
-                await on_click.respond(embed=embed)
-                id_msg = await self.client.wait_for('message', check=lambda msg: msg.author == ctx.author)
-                msg = await general_art.fetch_message(int(id_msg.content))
-                attachment = msg.attachments[0]
-
-                embed = discord.Embed(
-                    title = "",
-                    description = "",
-                    timestamp = msg.created_at,
-                    color = msg.author.color
-                )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
-                embed.set_author(name = f"Арт от {msg.author.display_name}", icon_url = msg.author.avatar_url)
-                embed.set_image(url = f"{attachment.url}")
-                await archive_arts.send(embed=embed)
-            if on_click.component.id == 'clear':
-                archive_arts = self.client.get_channel(1006834087031488602)
-                await archive_arts.purge(limit = None)
-                embed = discord.Embed(
-                    title = "🏆 | Архив Артов",
-                    description = "*Архив успешно очищен!*",
-                    color = 0x1ce091
-                )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
-                await ch.send(embed=embed)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        msg = await ctx.send(embed = embed, view = art())
 
     @commands.command()
     @commands.has_any_role(997425461317599272, 952530469751255041, 952530469751255042, 952530469751255043)
@@ -176,14 +204,6 @@ class adm(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.send("Вы слишком долго ждали, пожалуйста, попробуйте еще раз.")
 
-        logembed = discord.Embed(title="🎉 | Новый Розыгрыш",
-                             description=f"**Приз:** ``{msg4.content}``\n**Победителей:** ``{winerscount}``\n**Канал:** {giveawaychannel.mention}\n**Создатель:** {ctx.author.mention}",
-                             color=discord.Color.red())
-        logembed.set_thumbnail(url=ctx.author.avatar_url)
-
-        logchannel = ctx.guild.get_channel(1011208572895510628)
-        await logchannel.send(embed=logembed)
-
         futuredate = datetime.datetime.utcnow() + datetime.timedelta(seconds=timewait)
         embed1 = discord.Embed(color=discord.Color(random.randint(0x000000, 0xFFFFFF)),
                            title=f"🎉 | РОЗЫГРЫШ\n`{msg4.content}`", timestamp=futuredate,
@@ -196,7 +216,7 @@ class adm(commands.Cog):
         message = await giveawaychannel.fetch_message(msg.id)
         for reaction in message.reactions:
             if str(reaction.emoji) == "🎉":
-                users = await reaction.users().flatten()
+                users = [user async for user in reaction.users()]
                 if len(users) == 1:
                     return await msg.edit(embed=discord.Embed(title="Никто не выиграл в розыгрыше."))
         try:
@@ -215,13 +235,13 @@ class adm(commands.Cog):
         async for message in ctx.channel.history(limit=100, oldest_first=False):
             if message.author.id == self.client.user.id and message.embeds:
                 reroll = await ctx.fetch_message(message.id)
-                users = await reroll.reactions[0].users().flatten()
+                users = [user async for user in reroll.reactions[0].users()]
                 users.pop(users.index(self.client.user))
                 winner = random.choice(users)
                 await ctx.send(f"Новый победитель - это {winner.mention}")
                 break
         else:
-            await ctx.send("На этом канале не проводится никаких розыгрышей призов.")
+            await ctx.send("На этом канале не проводится никаких розыгрышей призов.")           
 
     @commands.command()
     @commands.has_any_role(952530469751255043, 952530469751255042)
@@ -231,78 +251,8 @@ class adm(commands.Cog):
             description = "",
             color = 0x674ea7
         )
-        embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        msg = await ctx.send(embed = embed, view = archive())
 
-        row = ActionRow(
-            Button(
-                style = ButtonStyle.red,
-                custom_id = 'cancel',
-                label = 'Отмена',
-                emoji = '🔓'
-            ),
-            Button(
-                style = ButtonStyle.blurple,
-                custom_id = 'ticket',
-                label = 'Тикет',
-                emoji = '🎟'
-            ),
-            Button(
-                style = ButtonStyle.blurple,
-                custom_id = 'channel',
-                label = 'Канал',
-                emoji = '📚'
-            ),
-        )
-        msg = await ctx.send(embed = embed, components=[row])
-        on_click = await msg.wait_for_button_click(timeout = 120)
-        ch = self.client.get_channel(ctx.channel.id)
-        for _ in range(1):
-            if on_click.component.id == 'cancel':
-                embed = discord.Embed(
-                    title = "📚 | Архив Каналов",
-                    description = "**Действие было отменено пользователем**",
-                    color = 0x674ea7
-                )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
-                await msg.edit(embed = embed)
-            if on_click.component.id == 'ticket':
-                if ctx.channel.name.startswith('closed'):
-                    category = discord.utils.get(ctx.guild.channels, name=settings.channels.ticket_archive)
-                    embed = discord.Embed(
-                        title = "📚 | Архив Каналов",
-                        description = "**Перемещение тикета в архив....**",
-                        color = 0x674ea7
-                    )
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
-                    await ch.send(embed = embed)
-                    await ch.edit(
-                        sync_permissions = True,
-                        category = category,
-                        reason = f'Архивирование канала | {ctx.author.name}#{ctx.author.discriminator}'
-                    )
-                else:
-                    embed = discord.Embed(
-                        title = "📚 | Архив Каналов",
-                        description = "**Данный тикет не закрыт, перемещение невозможно.**",
-                        color = 0x674ea7
-                    )
-                    embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
-                    await ch.send(embed = embed)
-            if on_click.component.id == 'channel':
-                category = discord.utils.get(ctx.guild.channels, name=settings.channels.main_archive)
-                embed = discord.Embed(
-                    title = "📚 | Архив Каналов",
-                    description = "**Перемещение канала в архив....**",
-                    color = 0x674ea7
-                )
-                embed.set_footer(icon_url = self.client.user.avatar_url, text = f'{self.client.user.name} | Все права защищены')
-                await ch.send(embed = embed)
-                await ch.edit(
-                    name = f'{ctx.channel.name}_архив',
-                    sync_permissions = True,
-                    category = category,
-                    reason = f'Архивирование канала | {ctx.author.name}#{ctx.author.discriminator}'
-                )
-
-def setup(client):
-    client.add_cog(adm(client))
+async def setup(client):
+    await client.add_cog(adm(client))
