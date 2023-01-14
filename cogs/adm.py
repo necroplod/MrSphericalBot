@@ -8,9 +8,10 @@ from discord.ext import commands
 from discord.ui.view import View
 from discord.ui.modal import Modal
 
-class art_id(Modal, title = '🎇 | ID'):
+
+class Art_id(Modal, title = '🎇 | ID'):
     msg = discord.ui.TextInput(
-        label = 'ID сообщения'
+        label = 'ID сообщения',
     )
     async def on_submit(self, interaction: discord.Interaction):
         general_art = discord.utils.get(interaction.guild.channels, name=settings.channels.art)
@@ -27,7 +28,7 @@ class art_id(Modal, title = '🎇 | ID'):
         embed.set_author(name = f"Арт от {msg.author.display_name}", icon_url = msg.author.avatar.url)
         embed.set_image(url = f"{attachment.url}")
         await archive_art.send(embed=embed)
-class art(discord.ui.View):
+class Art(discord.ui.View):
         def __init__(self, *, timeout=180):
             super().__init__(timeout=timeout)
             
@@ -48,7 +49,7 @@ class art(discord.ui.View):
                     await archive_art.send(embed=embed)
         @discord.ui.button(emoji = '🎯', style = discord.ButtonStyle.blurple)
         async def add(self, interaction: discord.Interaction, button: discord.ui.Button):
-            await interaction.response.send_modal(art_id())
+            await interaction.response.send_modal(Art_id())
 
         @discord.ui.button(emoji = '🗑', style = discord.ButtonStyle.blurple, disabled = True)
         async def clear(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -61,7 +62,7 @@ class art(discord.ui.View):
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
             await interaction.response.edit_message(self=view, embed=embed)
-class archive(discord.ui.View):
+class Archive(discord.ui.View):
         def __init__(self):
             super().__init__()
             
@@ -107,6 +108,50 @@ class archive(discord.ui.View):
                 category = category,
                 reason = f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
             )
+class Poll_modal(Modal, title = '🎁 | Опрос'):
+    name = discord.ui.TextInput(label = "Тема опроса:", required = True)
+    option_1 = discord.ui.TextInput(label = "Первый вариант ответа:", required = True)
+    option_2 = discord.ui.TextInput(label = "Второй вариант ответа:", required = True)
+    option_3 = discord.ui.TextInput(label = "Третий вариант ответа:", placeholder = "Этот вариант можно оставить пустым",required = False)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        one = f":one: {self.option_1.value}"
+        two = f":two: {self.option_2.value}"
+        if self.option_3.value == '':
+            three = ''
+        else:
+            three = f":three: {self.option_3.value}"
+
+
+        embed = discord.Embed(
+            title = '🎁 | Опрос',
+            description = f"""
+**{self.name.value}**
+{one}
+{two}
+{three}""",
+            color = 0x007f5c
+        )
+        embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+        embed.set_author(name = interaction.user.display_name, icon_url= interaction.user.display_avatar)
+
+        msg = await interaction.channel.send(embed=embed)
+        await msg.add_reaction('1️⃣')
+        await msg.add_reaction('2️⃣')
+        if self.option_3.value == '':
+            return
+        elif self.option_3.value != '':
+            await msg.add_reaction('3️⃣')
+
+
+
+class Poll(View):
+    def __init__(self, *, timeout=60):
+        super().__init__(timeout=timeout)
+
+    @discord.ui.button(emoji='🎋', style=discord.ButtonStyle.green, label = 'Создать опрос')
+    async def poll(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(Poll_modal())
 class adm(commands.Cog):
 
     def __init__(self, client):
@@ -121,7 +166,7 @@ class adm(commands.Cog):
             color = 0x81d8d0
         )
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
-        msg = await ctx.send(embed = embed, view = art())
+        msg = await ctx.send(embed = embed, view = Art())
 
     @commands.command()
     @commands.has_any_role(997425461317599272, 952530469751255041, 952530469751255042, 952530469751255043)
@@ -252,7 +297,19 @@ class adm(commands.Cog):
             color = 0x674ea7
         )
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
-        msg = await ctx.send(embed = embed, view = archive())
+        msg = await ctx.send(embed = embed, view = Archive())
+
+    @commands.command()
+    @commands.has_any_role(997425461317599272, 952530469751255042, 952530469751255043)
+    async def poll(self, ctx):
+        embed = discord.Embed(
+            title = "🎁 | Опрос",
+            description = "",
+            color = 0x007f5c
+        )
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        author = ctx.author
+        await ctx.send(embed = embed, view = Poll())
 
 async def setup(client):
     await client.add_cog(adm(client))

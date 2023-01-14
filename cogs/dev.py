@@ -11,8 +11,6 @@ class dev(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def load(self, ctx, extensions):
-        if extensions.startswith('handlers'):
-            await self.client.load_extension(f'handlers.{extensions}')
         await self.client.load_extension(f'cogs.{extensions}')
         embed = discord.Embed(
             title = "",
@@ -25,8 +23,6 @@ class dev(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def unload(self, ctx, extensions):
-        if extensions.startswith('handlers'):
-            await self.client.unload_extension(f'handlers.{extensions}')
         await self.client.unload_extension(f'cogs.{extensions}')
         embed = discord.Embed(
             title = "",
@@ -39,9 +35,6 @@ class dev(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def reload(self, ctx, extensions):
-        if extensions.startswith('handlers'):
-            await self.client.unload_extension(f'handlers.{extensions}')
-            await self.client.load_extension(f'handlers.{extensions}')
         await self.client.unload_extension(f'cogs.{extensions}')
         await self.client.load_extension(f'cogs.{extensions}')
         embed = discord.Embed(
