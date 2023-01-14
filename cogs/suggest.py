@@ -32,6 +32,7 @@ class suggest(commands.Cog):
                     await message.delete()
                     msg1 = await channel.send(embed=embed)
                     if message.channel.id != settings.channels.todo:
+                        await msg1.create_thread(name = "🛶 | Обсуждение")
                         await msg1.add_reaction('👍')
                         await msg1.add_reaction('👎')
                     else:
