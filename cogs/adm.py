@@ -119,6 +119,7 @@ class Archive(discord.ui.View):
                 reason = f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
             )
 class Poll_modal(Modal, title = '🎁 | Опрос'):
+    ch = discord.ui.TextInput(label = "ID Канала:", placeholder = "Оставьте пустым, если опрос будет в этом канале", required = False)
     name = discord.ui.TextInput(label = "Тема опроса:", required = True)
     option_1 = discord.ui.TextInput(label = "Первый вариант ответа:", required = True)
     option_2 = discord.ui.TextInput(label = "Второй вариант ответа:", required = True)
@@ -145,12 +146,14 @@ class Poll_modal(Modal, title = '🎁 | Опрос'):
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         embed.set_author(name = interaction.user.display_name, icon_url= interaction.user.display_avatar)
 
-        msg = await interaction.channel.send(embed=embed)
+        if self.ch.value == '':
+            msg = await interaction.channel.send(f'<@&{settings.misc.poll_role}>', embed=embed)
+        else:
+            channel = discord.utils.get(interaction.guild.channels, id = int(self.ch.value))
+            msg = await channel.send(f'<@&{settings.misc.poll_role}>', embed=embed)
         await msg.add_reaction('1️⃣')
         await msg.add_reaction('2️⃣')
-        if self.option_3.value == '':
-            return
-        elif self.option_3.value != '':
+        if self.option_3.value != '':
             await msg.add_reaction('3️⃣')
 
 
