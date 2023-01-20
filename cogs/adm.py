@@ -78,19 +78,29 @@ class Archive(discord.ui.View):
         @discord.ui.button(emoji = '🎟', style = discord.ButtonStyle.blurple, label = 'Тикет')
         async def ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
             category = discord.utils.get(interaction.guild.channels, name=settings.channels.ticket_archive)
-            embed = discord.Embed(
-                title = "📚 | Архив Каналов",
-                description = "<a:768563657390030971:1041076662546219168> **Перемещение тикета в архив....**",
-                color = 0x674ea7
-            )
-            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-            await interaction.response.edit_message(view=None, embed=embed)
-            ch = interaction.channel
-            await ch.edit(
-                sync_permissions = True,
-                category = category,
-                reason = f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
-            )
+            if len(category.channels) > 48:
+                embed = discord.Embed(
+                    title="📚 | Архив Каналов",
+                    description="<a:768563657390030971:1041076662546219168> **Архив засорился!**",
+                    color=0x674ea7
+                )
+                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                embed.set_image(url="https://media.tenor.com/r3t0LfS0dCwAAAAd/toilet-meme.gif")
+                await interaction.response.edit_message(view=None, embed=embed)
+            else:
+                embed = discord.Embed(
+                    title = "📚 | Архив Каналов",
+                    description = "<a:768563657390030971:1041076662546219168> **Перемещение тикета в архив....**",
+                    color = 0x674ea7
+                )
+                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                await interaction.response.edit_message(view=None, embed=embed)
+                ch = interaction.channel
+                await ch.edit(
+                    sync_permissions = True,
+                    category = category,
+                    reason = f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
+                )
         @discord.ui.button(emoji = '📚', style = discord.ButtonStyle.blurple, label = 'Канал')
         async def channel(self, interaction: discord.Interaction, button: discord.ui.Button):
             category = discord.utils.get(interaction.guild.channels, name=settings.channels.main_archive)
