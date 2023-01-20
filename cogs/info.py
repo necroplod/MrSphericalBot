@@ -74,7 +74,7 @@ class info(commands.Cog):
       )
       embed.set_author(name = ctx.author.name, icon_url = ctx.author.avatar.url)
 
-      embed.add_field(name = '<:khrushchev:1005361978442780680>  Информация', value = f'`{prefix}help` `{prefix}alarm`', inline=False)
+      embed.add_field(name = '<:pakistan:1046443315177984130>  Информация', value = f'`{prefix}help` `{prefix}alarm`', inline=False)
       embed.add_field(name = '<:moon:1051616411971231804>  Веселье', value = f'`{prefix}catkdk` `{prefix}kdk` `{prefix}kdkeat`', inline=False)
       embed.add_field(name = '<:king:1005355877278154814>  Админские Штучки', value = f'`{prefix}giveaway` `{prefix}reroll` `{prefix}art` `{prefix}archive` `{prefix}panel` `{prefix}poll`', inline=False)
       embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
