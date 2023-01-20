@@ -47,6 +47,3 @@ client = Setup(
 	intents=Intents.all()
 )
 client.run(Account.token)
-
-
-# python "E:/Python/MrSphericalBot/Full/main.py"
