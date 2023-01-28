@@ -313,7 +313,7 @@ class adm(commands.Cog):
         msg = await ctx.send(embed = embed, view = Archive())
 
     @commands.command()
-    @commands.has_any_role(997425461317599272, 952530469751255042, 952530469751255043)
+    @commands.has_any_role(997425461317599272, 952530469751255042, 952530469751255043, 1066380355927548026, 1068147277018955806, 1068705500285370458)
     async def poll(self, ctx):
         embed = discord.Embed(
             title = "🎁 | Опрос",
