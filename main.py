@@ -10,9 +10,11 @@ class Account():
 	if config.CANARY:
 		prefix = config.prefix.CANARY
 		token = config.token.CANARY
+		game = 'c.help'
 	else:
 		prefix = config.prefix.MAIN
 		token = config.token.MAIN
+		game = 's.help'
 class Setup(commands.Bot):
 	def main(self):	
 		self.remove_command('help')
@@ -42,7 +44,7 @@ class Setup(commands.Bot):
 
 client = Setup(
 	status = discord.Status.online, 
-	activity = discord.Streaming(name=f's.help', url='https://www.youtube.com/c/%D0%9C%D0%B8%D1%81%D1%82%D0%B5%D1%80%D0%A1%D1%84%D0%B5%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9'), 
+	activity = discord.Streaming(name=Account().game, url='https://www.youtube.com/c/%D0%9C%D0%B8%D1%81%D1%82%D0%B5%D1%80%D0%A1%D1%84%D0%B5%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9'),
 	case_insensitive=True, 
 	command_prefix=Account.prefix, 
 	intents=Intents.all()
