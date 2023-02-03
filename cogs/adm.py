@@ -171,7 +171,7 @@ class adm(commands.Cog):
         self.client = client
 
     @commands.command()
-    @commands.has_any_role(952530469751255043, 952530469751255042)
+    @commands.has_any_role(1071139216580419644)
     async def art(self, ctx):
         embed = discord.Embed(
             title = "🏆 | Архив Артов",
@@ -182,7 +182,7 @@ class adm(commands.Cog):
         msg = await ctx.send(embed = embed, view = Art())
 
     @commands.command()
-    @commands.has_any_role(997425461317599272, 952530469751255041, 952530469751255042, 952530469751255043)
+    @commands.has_any_role(1071139413586882652)
     async def giveaway(self, ctx):
         await ctx.send("Выберите канал, на котором вы хотели бы провести розыгрыш призов.")
 
@@ -288,7 +288,7 @@ class adm(commands.Cog):
                                              color=discord.Color.blue()))
 
     @commands.command()
-    @commands.has_any_role(997425461317599272, 952530469751255041, 952530469751255042, 952530469751255043)
+    @commands.has_any_role(1071139413586882652)
     async def reroll(self, ctx):
         async for message in ctx.channel.history(limit=100, oldest_first=False):
             if message.author.id == self.client.user.id and message.embeds:
@@ -302,7 +302,7 @@ class adm(commands.Cog):
             await ctx.send("На этом канале не проводится никаких розыгрышей призов.")           
 
     @commands.command()
-    @commands.has_any_role(952530469751255043, 952530469751255042)
+    @commands.has_any_role(1071139692914946109)
     async def archive(self, ctx):
         embed = discord.Embed(
             title = "📚 | Архив Каналов",
@@ -313,7 +313,7 @@ class adm(commands.Cog):
         msg = await ctx.send(embed = embed, view = Archive())
 
     @commands.command()
-    @commands.has_any_role(997425461317599272, 952530469751255042, 952530469751255043, 1066380355927548026, 1068147277018955806, 1068705500285370458)
+    @commands.has_any_role(1071139871105744977)
     async def poll(self, ctx):
         embed = discord.Embed(
             title = "🎁 | Опрос",
