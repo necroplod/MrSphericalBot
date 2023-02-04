@@ -14,8 +14,8 @@ class Art_id(Modal, title = '🎇 | ID'):
         label = 'ID сообщения',
     )
     async def on_submit(self, interaction: discord.Interaction):
-        general_art = discord.utils.get(interaction.guild.channels, name=settings.channels.art)
-        archive_art = discord.utils.get(interaction.guild.channels, name=settings.channels.archive_art)
+        general_art = discord.utils.get(interaction.guild.channels, id=settings.channels.art)
+        archive_art = discord.utils.get(interaction.guild.channels, id=settings.channels.archive_art)
         msg = await general_art.fetch_message(int(self.msg.value))
         attachment = msg.attachments[0]
 
@@ -34,8 +34,8 @@ class Art(discord.ui.View):
             
         @discord.ui.button(emoji = '♻', style = discord.ButtonStyle.green, disabled = True)
         async def start(self, interaction: discord.Interaction, button: discord.ui.Button):
-            archive_art = discord.utils.get(interaction.guild.channels, name=settings.channels.archive_art)
-            general_art = discord.utils.get(interaction.guild.channels, name=settings.channels.art)
+            archive_art = discord.utils.get(interaction.guild.channels, id=settings.channels.archive_art)
+            general_art = discord.utils.get(interaction.guild.channels, id=settings.channels.art)
             async for art in general_art.history(limit = None):
                 for attachment in art.attachments:            
                     embed = discord.Embed(
@@ -54,7 +54,7 @@ class Art(discord.ui.View):
 
         @discord.ui.button(emoji = '🗑', style = discord.ButtonStyle.blurple, disabled = True)
         async def clear(self, interaction: discord.Interaction, button: discord.ui.Button):
-            archive_art = discord.utils.get(interaction.guild.channels, name=settings.channels.archive_art)
+            archive_art = discord.utils.get(interaction.guild.channels, id=settings.channels.archive_art)
             await archive_art.purge(limit = None)
             embed = discord.Embed(
                 title = "🏆 | Архив Артов",

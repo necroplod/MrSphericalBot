@@ -19,7 +19,7 @@ class Auth_panel(Modal, title = '🎆 | Аутентификация'):
     async def on_submit(self, interaction: discord.Interaction):
         if self.login.value == Panel.login:
             if self.pwd.value in Panel.pwds:
-                logs = discord.utils.get(interaction.guild.channels, name=settings.channels.logs_name)
+                logs = discord.utils.get(interaction.guild.channels, id=settings.channels.logs)
                 embed = discord.Embed(
                     title='🎲 | Панель Управления',
                     description=f'''
@@ -91,7 +91,7 @@ class Bans_panel(Modal, title = '🎲 | Панель управления'):
         bans.append(self.two.value)
         bans.append(self.three.value)
         bans.append(self.four.value)
-        logs = discord.utils.get(interaction.guild.channels, name=settings.channels.punishments_name)
+        logs = discord.utils.get(interaction.guild.channels, id=settings.channels.punishments_name)
         for id in bans:
             async def ban_():
                 usr = discord.ext.commands.Bot.get_user(id)

@@ -17,7 +17,7 @@ class Alarm_arguments(Modal, title = '🦺 | Вызов модерации'):
         required = False
     )
     async def on_submit(self, interaction: discord.Interaction):
-        modchat = discord.utils.get(interaction.guild.channels, name=settings.channels.mod_chat)
+        modchat = discord.utils.get(interaction.guild.channels, id=settings.channels.mod_chat)
         this = discord.utils.get(interaction.guild.channels, name=interaction.channel.name)
         if self.usr.value is None:
             offender = 'Не указан'
