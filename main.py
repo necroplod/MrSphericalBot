@@ -1,5 +1,6 @@
 import config
 import settings
+import cogs.ticket
 
 import asyncio
 import discord
@@ -22,6 +23,9 @@ class Setup(commands.Bot):
 	
 	async def setup_hook(self):
 		self.main()
+		self.add_view(cogs.ticket.PersistentView())
+		self.add_view(cogs.ticket.Close())
+		self.add_view(cogs.ticket.Panel())
 		for extension in settings.extensions.cogs:
 			try:
 				await self.load_extension(extension)
