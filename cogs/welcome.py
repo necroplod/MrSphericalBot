@@ -24,23 +24,14 @@ class welcome(commands.Cog):
                             inviter = integration.user
                 embed = discord.Embed(
                     title='',
-                    description=f'''
-                    ●─────────────────●
-                    {member.mention}
-                    ●─────────────────● 
-                    Бот был добавлен {inviter.mention}''',
+                    description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\nБот был добавлен {inviter.mention}''',
                     color = 0x2ecc71,
                     timestamp = datetime.datetime.now()
                 )
             else:
                 embed = discord.Embed(
                     title='',
-                    description=f'''
-                    ●─────────────────●
-                    {member.mention}
-                    ●─────────────────● 
-                    *Пламенный привет тебе друг!
-                    Заваривай кофеёк, и залетай в наилучший сервер на свете!*''',
+                    description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!*''',
                     color = 0x2ecc71,
                     timestamp = datetime.datetime.now()
                 )
@@ -56,11 +47,7 @@ class welcome(commands.Cog):
         welcome = self.client.get_channel(settings.channels.welcome)
         embed = discord.Embed(
             title='',
-            description=f'''
-            ●─────────────────●
-            {member.mention}
-            ●─────────────────●
-            **Покинул нас.**''',
+            description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n**Покинул нас.**''',
             color = 0x2ecc71,
             timestamp = datetime.datetime.now()
         )
