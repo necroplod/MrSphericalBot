@@ -78,7 +78,7 @@ class info(commands.Cog):
       embed.add_field(name = '<:moon:1051616411971231804>  Веселье', value = f'`{prefix}catkdk` `{prefix}kdk` `{prefix}kdkeat`', inline=False)
       embed.add_field(name = '<:serbia:1051616011272589452>  ВПИ', value = f'`{prefix}msg`', inline=False)
       embed.add_field(name = '<:kazahstan:1051609522642374727>  Розыгрыши и прочее', value = f'`{prefix}giveaway` `{prefix}reroll` `{prefix}poll`', inline=False)
-      embed.add_field(name = '<:king:1005355877278154814>  Админские Штучки', value = f'`{prefix}art` `{prefix}archive` `{prefix}panel`', inline=False)
+      embed.add_field(name = '<:king:1005355877278154814>  Админские Штучки', value = f'`{prefix}art` `{prefix}archive` `{prefix}panel` `{prefix}ticket`', inline=False)
       embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
       await ctx.send(embed=embed)
 
