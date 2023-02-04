@@ -46,6 +46,7 @@ class Art(discord.ui.View):
                     )
                     embed.set_author(name = f"Арт от {art.author.display_name}", icon_url = art.author.avatar.url)
                     embed.set_image(url = f"{attachment.url}")
+                    await interaction.response.defer()
                     await archive_art.send(embed=embed)
         @discord.ui.button(emoji = '🎯', style = discord.ButtonStyle.blurple)
         async def add(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -75,32 +76,6 @@ class Archive(discord.ui.View):
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
             await interaction.response.edit_message(view=None, embed=embed)
-        @discord.ui.button(emoji = '🎟', style = discord.ButtonStyle.blurple, label = 'Тикет')
-        async def ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
-            category = discord.utils.get(interaction.guild.channels, name=settings.channels.ticket_archive)
-            if len(category.channels) > 48:
-                embed = discord.Embed(
-                    title="📚 | Архив Каналов",
-                    description="<a:768563657390030971:1041076662546219168> **Архив засорился!**",
-                    color=0x674ea7
-                )
-                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-                embed.set_image(url="https://media.tenor.com/r3t0LfS0dCwAAAAd/toilet-meme.gif")
-                await interaction.response.edit_message(view=None, embed=embed)
-            else:
-                embed = discord.Embed(
-                    title = "📚 | Архив Каналов",
-                    description = "<a:768563657390030971:1041076662546219168> **Перемещение тикета в архив....**",
-                    color = 0x674ea7
-                )
-                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-                await interaction.response.edit_message(view=None, embed=embed)
-                ch = interaction.channel
-                await ch.edit(
-                    sync_permissions = True,
-                    category = category,
-                    reason = f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
-                )
         @discord.ui.button(emoji = '📚', style = discord.ButtonStyle.blurple, label = 'Канал')
         async def channel(self, interaction: discord.Interaction, button: discord.ui.Button):
             category = discord.utils.get(interaction.guild.channels, name=settings.channels.main_archive)
@@ -147,10 +122,10 @@ class Poll_modal(Modal, title = '🎁 | Опрос'):
         embed.set_author(name = interaction.user.display_name, icon_url= interaction.user.display_avatar)
 
         if self.ch.value == '':
-            msg = await interaction.channel.send(f'<@&{settings.misc.poll_role}>', embed=embed)
+            msg = await interaction.channel.send(f'<@&{settings.roles.poll_role}>', embed=embed)
         else:
             channel = discord.utils.get(interaction.guild.channels, id = int(self.ch.value))
-            msg = await channel.send(f'<@&{settings.misc.poll_role}>', embed=embed)
+            msg = await channel.send(f'<@&{settings.roles.poll_role}>', embed=embed)
         await msg.add_reaction('1️⃣')
         await msg.add_reaction('2️⃣')
         if self.option_3.value != '':
