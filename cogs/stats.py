@@ -1,6 +1,5 @@
 import discord
 import settings
-import asyncio
 from discord.ext import commands
 from discord.ext import tasks
 
@@ -53,12 +52,6 @@ class stats(commands.Cog):
     async def on_ready(self):
         self.stats.start()
         self.stats_rp.start()
-
-
-
-
-
-
 
 async def setup(client):
     await client.add_cog(stats(client))
