@@ -1,5 +1,6 @@
 import discord
 import settings
+import datetime
 from discord.ext import commands
 
 class Panel(discord.ui.View):
@@ -47,6 +48,17 @@ class Panel(discord.ui.View):
                     category=category,
                     reason=f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
                 )
+                logs = discord.Embed(
+                    title="🥊 | Тикеты",
+                    description=f'''
+                    <a:768563657390030971:1041076662546219168> **Действие:** Архивация тикета
+                    <a:768563657390030971:1041076662546219168> **Тикет:** {ch.name}
+                    <a:768563657390030971:1041076662546219168> **Модератор:** <@{interaction.user.id}>''',
+                    color=0x370acd,
+                )
+                logs.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                logsch = discord.utils.get(interaction.guild.channels, id=settings.channels.tickets_logs)
+                await logsch.send(embed=logs)
         else:
             await interaction.response.send_message(f'**У Вас отсутствует роль <@&{settings.roles.archive_channels}>!**', ephemeral=True)
     @discord.ui.button(emoji='⛔', style=discord.ButtonStyle.red, label='Удалить', custom_id = "panel:close")
@@ -55,6 +67,36 @@ class Panel(discord.ui.View):
         ch = interaction.channel
         role = interaction.guild.get_role(settings.roles.manage_tickets)
         if role in user.roles:
+            messages = []
+            start = datetime.datetime.now()
+            async for message in interaction.channel.history(limit=None, oldest_first=True):
+                if message.author.bot:
+                    pass
+                else:
+                    message_content = f"*{message.created_at.strftime('%d.%m %H:%M:%S')}* <@{message.author.id}>: *{message.clean_content}*"
+                    messages.append(message_content)
+
+            logsch = discord.utils.get(interaction.guild.channels, id=settings.channels.tickets_logs)
+
+            logs = discord.Embed(
+                title="🥊 | Тикеты",
+                description=f'''
+                <a:768563657390030971:1041076662546219168> **Действие:** Удаление тикета
+                <a:768563657390030971:1041076662546219168> **Тикет:** {ch.name}
+                <a:768563657390030971:1041076662546219168> **Модератор:** <@{interaction.user.id}>''',
+                color=0x370acd
+            )
+            logs.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+            msg = discord.Embed(
+                description = '\n'.join(messages),
+                color = 0x370acd
+            )
+            msg.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+
+            if len(msg.description) > 4095:
+                await logsch.send(embed = logs)
+            else:
+                await logsch.send(embeds=[logs, msg])
             await interaction.response.send_message('*Удаление тикета...*')
             await ch.delete()
         else:
@@ -78,6 +120,17 @@ class Close(discord.ui.View):
         manage = discord.Embed(
             description="```Панель управления```"
         )
+        logs = discord.Embed(
+            title = "🥊 | Тикеты",
+            description = f'''
+            <a:768563657390030971:1041076662546219168> **Действие:** Закрытие тикета
+            <a:768563657390030971:1041076662546219168> **Тикет:** {ch.name}
+            <a:768563657390030971:1041076662546219168> **Модератор:** <@{interaction.user.id}>''',
+            color = 0x370acd,
+        )
+        logs.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+        logsch = discord.utils.get(interaction.guild.channels, id = settings.channels.tickets_logs)
+        await logsch.send(embed=logs)
         await interaction.response.send_message(embeds=[embed, manage], view = Panel())
 class Select(discord.ui.Select):
     def __init__(self):

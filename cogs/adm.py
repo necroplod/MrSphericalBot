@@ -299,5 +299,6 @@ class adm(commands.Cog):
         author = ctx.author
         await ctx.send(embed = embed, view = Poll())
 
+
 async def setup(client):
     await client.add_cog(adm(client))
