@@ -2,15 +2,9 @@ import discord
 import random
 from discord.ext import commands
 
-catkdk = ['https://cdn.discordapp.com/attachments/997425650904338453/1000048326521135205/unknown.png',
-         'https://cdn.discordapp.com/attachments/994918229233385483/997204446939455598/20210110_164119.jpg',
-         'https://cdn.discordapp.com/attachments/997425650904338453/1000010619572977834/unknown.png'
-         ]
+from assets.images import Fun
+from assets.images import Stickers
 
-kdk = ['https://cdn.discordapp.com/attachments/997425650904338453/1000700313856122900/IMG_20220724_114516.jpg',
-      'https://cdn.discordapp.com/attachments/997425650904338453/1000689790854910043/IMG_20220724_110316.jpg',
-      'https://cdn.discordapp.com/attachments/997425650904338453/1000685145868730408/20220303_172955.jpg'
-      ]
 
 class fun(commands.Cog):
 
@@ -20,7 +14,8 @@ class fun(commands.Cog):
     @commands.command()
     async def catkdk(self, ctx):
         embed = discord.Embed()
-        url = random.choice(catkdk)
+        embed.color = discord.Color.random()
+        url = random.choice(Fun.catkdk)
         embed.set_image(url=url)
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await ctx.send(embed=embed)
@@ -28,7 +23,8 @@ class fun(commands.Cog):
     @commands.command()
     async def kdk(self, ctx):
         embed = discord.Embed()
-        url = random.choice(kdk)
+        embed.color = discord.Color.random()
+        url = random.choice(Fun.kdk)
         embed.set_image(url=url)
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await ctx.send(embed=embed)
@@ -36,7 +32,99 @@ class fun(commands.Cog):
     @commands.command()
     async def kdkeat(self, ctx):
         embed = discord.Embed()
-        embed.set_image(url="https://cdn.discordapp.com/attachments/997425610207006800/1007220298090807317/c63214c00e4d29c0.gif")
+        embed.color = discord.Color.random()
+        url = Fun.kdkeat
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def кринж(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.кринж
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def лох(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.лох
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def украина(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.украина
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def да(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.да
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def эй(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.эй
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def бомба(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.бомба
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def осуждаю(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.осуждаю
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def быдло(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.быдло
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def стоп(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.стоп
+        embed.set_image(url=url)
+        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def господин(self, ctx):
+        embed = discord.Embed()
+        embed.color = discord.Color.random()
+        url = Stickers.господин
+        embed.set_image(url=url)
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await ctx.send(embed=embed)
 
