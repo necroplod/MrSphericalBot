@@ -40,16 +40,17 @@ class error(commands.Cog):
         if isinstance(error, commands.CommandInvokeError):
             logs = self.client.get_channel(settings.channels.bugs)
             embed = discord.Embed(
-                title = "🧿 |  Баг",
-                description = f'''**• Время:** {datetime.datetime.now()}
-                **• Баг:** ```{error}```
-                **• Канал:** <#{ctx.message.channel.id}> - {ctx.message.channel.id}
-                **• Автор:** <@{ctx.author.id}> - {ctx.author.id}
-                **• Сообщение:** `{ctx.message.content}`
-                **• Полное Сообщение:** ```{ctx.message}```''',
-                color = 0xdaab39
+                title="🎲 | Панель Управления",
+                description=f'''
+                    <a:768563657390030971:1041076662546219168>  **Действие:** Обнаружен баг
+                    <a:768563657390030971:1041076662546219168>  **Время:** {datetime.datetime.now()}
+                    <a:768563657390030971:1041076662546219168>  **Баг:** ```{error}```
+                    <a:768563657390030971:1041076662546219168>  **Канал:** <#{ctx.message.channel.id}> | {ctx.message.channel.id}
+                    <a:768563657390030971:1041076662546219168>  **Автор:** <@{ctx.author.id}> | {ctx.author.id}
+                    <a:768563657390030971:1041076662546219168>  **Сообщение:** `{ctx.message.content}`''',
+                color=0xdaab39
             )
-            embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+            embed.set_footer(icon_url = self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
             await logs.send(embed=embed)
 
 async def setup(client):
