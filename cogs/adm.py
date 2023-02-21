@@ -14,6 +14,7 @@ class Art_id(Modal, title = '🎇 | ID'):
         label = 'ID сообщения',
     )
     async def on_submit(self, interaction: discord.Interaction):
+        await interaction.response.defer()
         general_art = discord.utils.get(interaction.guild.channels, id=settings.channels.art)
         archive_art = discord.utils.get(interaction.guild.channels, id=settings.channels.archive_art)
         msg = await general_art.fetch_message(int(self.msg.value))
@@ -101,6 +102,7 @@ class Poll_modal(Modal, title = '🎁 | Опрос'):
     option_3 = discord.ui.TextInput(label = "Третий вариант ответа:", placeholder = "Этот вариант можно оставить пустым",required = False)
 
     async def on_submit(self, interaction: discord.Interaction):
+        await interaction.response.defer()
         one = f":one: {self.option_1.value}"
         two = f":two: {self.option_2.value}"
         if self.option_3.value == '':
