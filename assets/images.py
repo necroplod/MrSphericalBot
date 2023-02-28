@@ -1,12 +1,19 @@
 class Fun:
     catkdk = ['https://cdn.discordapp.com/attachments/997425650904338453/1000048326521135205/unknown.png',
               'https://cdn.discordapp.com/attachments/994918229233385483/997204446939455598/20210110_164119.jpg',
-              'https://cdn.discordapp.com/attachments/997425650904338453/1000010619572977834/unknown.png'
+              'https://cdn.discordapp.com/attachments/997425650904338453/1000010619572977834/unknown.png',
+              'https://media.discordapp.net/attachments/997425610207006800/1080149733869367316/81.png',
+              'https://media.discordapp.net/attachments/997425610207006800/1080149734129406012/85.png'
               ]
 
     kdk = ['https://cdn.discordapp.com/attachments/997425650904338453/1000700313856122900/IMG_20220724_114516.jpg',
            'https://cdn.discordapp.com/attachments/997425650904338453/1000689790854910043/IMG_20220724_110316.jpg',
-           'https://cdn.discordapp.com/attachments/997425650904338453/1000685145868730408/20220303_172955.jpg'
+           'https://cdn.discordapp.com/attachments/997425650904338453/1000685145868730408/20220303_172955.jpg',
+           'https://media.discordapp.net/attachments/997425610207006800/1080150157741531266/explorer_ZxH9FjQxoL.png',
+           'https://media.discordapp.net/attachments/997425610207006800/1080150157951258644/91.png',
+           'https://media.discordapp.net/attachments/997425610207006800/1080150158257438790/Discord_dUNtrwRB6X.png',
+           'https://media.discordapp.net/attachments/997425610207006800/1080150158513283163/93.png',
+           'https://media.discordapp.net/attachments/997425610207006800/1080150158769147954/Discord_Vne8Ts2G5M.png'
            ]
     kdkeat = "https://cdn.discordapp.com/attachments/997425610207006800/1007220298090807317/c63214c00e4d29c0.gif"
 class Stickers:
