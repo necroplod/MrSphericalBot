@@ -1,8 +1,7 @@
-import config
+from config import config
 import settings
 import cogs.ticket
 
-import asyncio
 import discord
 from discord import Intents
 from discord.ext import commands

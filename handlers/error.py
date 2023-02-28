@@ -1,4 +1,3 @@
-import config
 import settings
 import asyncio
 

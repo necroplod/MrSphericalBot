@@ -1,4 +1,4 @@
-import config
+import config.config as config
 import settings
 import asyncio
 
@@ -24,12 +24,13 @@ class logs(commands.Cog):
         embed = discord.Embed(
             title = '🎲 | Панель Управления',
             description = f'''
-            **• Действие:** Включение бота
-            **• Время:** {datetime.datetime.now()}''',
+            <a:768563657390030971:1041076662546219168>  **Действие:** Включение бота
+            <a:768563657390030971:1041076662546219168>  **Время:** {datetime.datetime.now()}''',
             color = 0xcdc9a5
         )
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await logs.send(embed=embed)
+
 
 
 async def setup(client):
