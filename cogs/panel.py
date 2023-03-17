@@ -1,7 +1,7 @@
 import discord
 import datetime
 import settings
-from config import Panel
+from config.config import Panel
 from discord.ext import commands
 from discord.ui.view import View
 from discord.ui.modal import Modal
@@ -10,7 +10,7 @@ global author
 class Auth_panel(Modal, title = '🎆 | Аутентификация'):
     login = discord.ui.TextInput(
         label = 'Логин',
-        placeholder = 'KrytoyAdmin2009 :)'
+        placeholder = 'KrytoyAdmin2006 :)'
     )
     pwd = discord.ui.TextInput(
         label = 'Пароль',
@@ -38,9 +38,9 @@ class Auth_panel(Modal, title = '🎆 | Аутентификация'):
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
                 await interaction.response.send_message(embed=embed, view = Main_panel())
             else:
-                await interaction.response.send_message('Неверный пароль!')
+                await interaction.response.send_message('Неверный пароль!', ephemeral = True)
         else:
-            await interaction.response.send_message('Неверный логин!')
+            await interaction.response.send_message('Неверный логин!', ephemeral = True)
 class Cogs_panel(Modal, title = '🎲 | Панель управления'):
     cog = discord.ui.TextInput(label = 'Имя кога')
     action = discord.ui.TextInput(
