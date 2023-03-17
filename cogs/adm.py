@@ -159,7 +159,7 @@ class adm(commands.Cog):
         msg = await ctx.send(embed = embed, view = Art())
 
     @commands.command()
-    @commands.has_any_role(1071139413586882652)
+    @commands.has_any_role(1071139413586882652, 1081557350588088350)
     async def giveaway(self, ctx):
         await ctx.send("Выберите канал, на котором вы хотели бы провести розыгрыш призов.")
 
@@ -265,7 +265,7 @@ class adm(commands.Cog):
                                              color=discord.Color.blue()))
 
     @commands.command()
-    @commands.has_any_role(1071139413586882652)
+    @commands.has_any_role(1071139413586882652, 1081557350588088350)
     async def reroll(self, ctx):
         async for message in ctx.channel.history(limit=100, oldest_first=False):
             if message.author.id == self.client.user.id and message.embeds:
