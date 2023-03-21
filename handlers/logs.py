@@ -31,6 +31,14 @@ class logs(commands.Cog):
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await logs.send(embed=embed)
 
+        wilds = self.client.get_channel(settings.channels.wilds)
+        await wilds.send('sync', delete_after = 1)
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.channel.id == settings.channels.wilds and message.content == 'sync':
+            await self.client.tree.sync()
+
 
 
 async def setup(client):
