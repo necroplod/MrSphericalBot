@@ -1,6 +1,7 @@
 from config import config
 import settings
 import cogs.ticket
+import cogs.role
 
 import discord
 from discord import Intents
@@ -26,6 +27,10 @@ class Setup(commands.Bot):
 		self.add_view(cogs.ticket.PersistentView())
 		self.add_view(cogs.ticket.Close())
 		self.add_view(cogs.ticket.Panel())
+		self.add_view(cogs.role.CountryView())
+		self.add_view(cogs.role.AccessView())
+		self.add_view(cogs.role.GenderView())
+		self.add_view(cogs.role.NotifyView())
 		for extension in settings.extensions.cogs:
 			try:
 				await self.load_extension(extension)
