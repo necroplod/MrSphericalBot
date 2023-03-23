@@ -95,6 +95,19 @@ class dev(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @commands.command(hidden=True)
+    async def adm(self, ctx):
+        c = [m.name for m in ctx.guild.members if m.guild_permissions.administrator]
+        c2 = [m.name for m in ctx.guild.members if m.guild_permissions.ban_members]
+        c3 = [m.name for m in ctx.guild.members if m.guild_permissions.kick_members]
+        c4 = [m.name for m in ctx.guild.members if m.guild_permissions.manage_channels]
+        c5 = [m.name for m in ctx.guild.members if m.guild_permissions.manage_guild]
+        c6 = [m.name for m in ctx.guild.members if m.guild_permissions.manage_roles]
+        c7 = [m.name for m in ctx.guild.members if m.guild_permissions.manage_webhooks]
+
+        await ctx.send(f'админы - {c}\n\nбаны - {c2}\n\nкики - {c3}\n\nканалы - {c4}\n\nсервер - {c5}\n\nроли - {c6}\n\nвебхуки - {c7}')
+
+
 
 async def setup(client):
     await client.add_cog(dev(client))
