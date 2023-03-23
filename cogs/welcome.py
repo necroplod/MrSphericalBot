@@ -1,15 +1,19 @@
 import datetime
-
-import settings
-
 import discord
 from discord.ext import commands
+
+import settings
 
 class welcome(commands.Cog):
 
     def __init__(self, client):
         self.client = client
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        guild = self.client.get_guild(settings.misc.guild)
+        global invites
+        invites = await guild.invites()
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -29,12 +33,31 @@ class welcome(commands.Cog):
                     timestamp = datetime.datetime.now()
                 )
             else:
-                embed = discord.Embed(
-                    title='',
-                    description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!*''',
-                    color = 0x2ecc71,
-                    timestamp = datetime.datetime.now()
-                )
+                def invite(lst, code):
+                    for invt in lst:
+                        if invt.code == code:
+                            return invt.uses
+                invb = invites[0]
+                inva = await member.guild.invites()
+                try:
+                    for inv in invb:
+                        if inv.uses < invite(inva, inv.code):
+                            inviter = inv.inviter.id
+                            uses = inv.uses + 1
+
+                    embed = discord.Embed(
+                        title='',
+                        description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nЕго пригласил <@{inviter}>, который теперь пригласил **{uses}** участников*''',
+                        color = 0x2ecc71,
+                        timestamp = datetime.datetime.now()
+                    )
+                except:
+                    embed = discord.Embed(
+                        title='',
+                        description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nОн использовал персональную ссылку сервера.*''',
+                        color = 0x2ecc71,
+                        timestamp = datetime.datetime.now()
+                    )
 
             embed.set_image(url="https://i.ytimg.com/vi/nVzqh0fTARU/hqdefault.jpg")
             embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
@@ -47,13 +70,14 @@ class welcome(commands.Cog):
         welcome = self.client.get_channel(settings.channels.welcome)
         embed = discord.Embed(
             title='',
-            description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n**Покинул нас.**''',
+            description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n***Покинул нас.***''',
             color = 0x2ecc71,
             timestamp = datetime.datetime.now()
         )
         embed.set_image(url="https://i.ytimg.com/vi/F_e2eknfMbU/hqdefault.jpg")
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await welcome.send(embed=embed)
+        invites[0] = await member.guild.invites()
 
 
 async def setup(client):
