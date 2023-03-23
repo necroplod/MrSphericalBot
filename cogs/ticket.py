@@ -1,4 +1,5 @@
 import discord
+import re
 import settings
 import datetime
 from discord.ext import commands
@@ -11,6 +12,12 @@ class Panel(discord.ui.View):
         ch = interaction.channel
         name = ch.name.replace("closed", "ticket")
         await ch.edit(name=name)
+        await ch.set_permissions(
+            interaction.user,
+            send_messages=True,
+            read_message_history=True,
+            read_messages=True
+        )
         embed = discord.Embed(
             title="🥊 | Тикеты",
             description=f"<a:768563657390030971:1041076662546219168>  *Тикет открыт <@{interaction.user.id}>*",
@@ -108,18 +115,28 @@ class Close(discord.ui.View):
 
     @discord.ui.button(emoji='🔒', style=discord.ButtonStyle.red, label='Закрыть', custom_id = "close:close")
     async def close(self, interaction: discord.Interaction, button: discord.ui.Button):
+        topic = interaction.channel.topic
         ch = interaction.channel
+
+        mods = interaction.guild.get_role(settings.roles.mods_tickets)
+        idd = re.search(r'\<@(.*)\>', topic, re.DOTALL).group(1)
+
+
         name = ch.name.replace("ticket", "closed")
         await ch.edit(name = name)
+        await ch.set_permissions(
+            interaction.user,
+            send_messages=False,
+            read_message_history=True,
+            read_messages=True
+        )
         embed = discord.Embed(
             title="🥊 | Тикеты",
             description=f"<a:768563657390030971:1041076662546219168>  *Тикет закрыт <@{interaction.user.id}>*",
             color=0x370acd
         )
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-        manage = discord.Embed(
-            description="```Панель управления```"
-        )
+        manage = discord.Embed(description="```Панель управления```")
         logs = discord.Embed(
             title = "🥊 | Тикеты",
             description = f'''
