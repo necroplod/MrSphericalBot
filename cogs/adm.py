@@ -214,8 +214,8 @@ class adm(commands.Cog):
                 <a:768563657390030971:1041076662546219168>  **Время наказания:** {время}
                 <a:768563657390030971:1041076662546219168>  **Доказательство:** ||{file.url}||
                 ''',
-
-                color = 0x98c379
+                color = 0x98c379,
+                timestamp = datetime.datetime.now()
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
             embed.set_image(url = file.url)
