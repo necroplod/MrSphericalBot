@@ -27,6 +27,7 @@ class Setup(commands.Bot):
 		self.add_view(cogs.ticket.PersistentView())
 		self.add_view(cogs.ticket.Close())
 		self.add_view(cogs.ticket.Panel())
+		self.add_view(cogs.ticket.TicketWait())
 		self.add_view(cogs.role.CountryView())
 		self.add_view(cogs.role.AccessView())
 		self.add_view(cogs.role.GenderView())

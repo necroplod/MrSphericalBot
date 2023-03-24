@@ -158,7 +158,7 @@ class Appeal(discord.ui.Modal, title = '📨 | Апелляции'):
     async def on_submit(self, interaction: discord.Interaction):
         guild = interaction.guild
         tickets = discord.utils.get(guild.channels, name=settings.channels.tickets)
-        tickets_count = discord.utils.get(guild.channels, id=settings.channels.tickets_count)
+        tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
         flatten = [msg async for msg in tickets_count.history(limit=100)]
         msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
         count = msg.content
@@ -170,7 +170,7 @@ class Appeal(discord.ui.Modal, title = '📨 | Апелляции'):
         count = str(f"0{count}")
 
         await interaction.response.send_message('*Создание тикета.. Ожидайте.*', ephemeral=True)
-        mods = guild.get_role(settings.roles.mods_tickets)
+        senior = guild.get_role(settings.roles.senior_mod)
 
         ch = await guild.create_text_channel(
             name=f'ticket-{count}',
@@ -190,7 +190,7 @@ class Appeal(discord.ui.Modal, title = '📨 | Апелляции'):
             read_messages=True
         )
         await ch.set_permissions(
-            mods,
+            senior,
             send_messages=True,
             read_message_history=True,
             read_messages=True
@@ -203,6 +203,22 @@ class Appeal(discord.ui.Modal, title = '📨 | Апелляции'):
         )
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=Close())
+
+class TicketWait(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(emoji='🎲', style=discord.ButtonStyle.green, label='Принять', custom_id="ticket:waitmod")
+    async def agree(self, interaction: discord.Interaction, button: discord.ui.Button):
+        ch = interaction.guild.get_channel(id_)
+        await ch.send(f'*Модератор <@{interaction.user.id}> взялся за тикет и скоро здесь будет, ожидайте.*')
+        await ch.set_permissions(
+            interaction.user,
+            send_messages=True,
+            read_message_history=True,
+            read_messages=True
+        )
+        await interaction.response.edit_message(content = f'*Модератор <@{interaction.user.id}> принял тикет №{count}.*', embed=None, view=None)
 
 class Select(discord.ui.Select):
     def __init__(self):
@@ -221,9 +237,13 @@ class Select(discord.ui.Select):
 
             guild = interaction.guild
             tickets = discord.utils.get(guild.channels, name=settings.channels.tickets)
-            tickets_count = discord.utils.get(guild.channels, id=settings.channels.tickets_count)
+            tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
+            mods = guild.get_role(settings.roles.mods_tickets)
+            notify = interaction.guild.get_channel(settings.channels.ticket_notify)
+
             flatten = [msg async for msg in tickets_count.history(limit=100)]
             msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
+            global count
             count = msg.content
             count = count[1:]
             count = int(f"1{count}")
@@ -233,8 +253,6 @@ class Select(discord.ui.Select):
             count = str(f"0{count}")
 
             await interaction.response.send_message('*Создание тикета.. Ожидайте.*', ephemeral=True)
-            mods = guild.get_role(settings.roles.mods_tickets)
-
             ch = await guild.create_text_channel(
                 name=f'ticket-{count}',
                 category=tickets,
@@ -252,12 +270,6 @@ class Select(discord.ui.Select):
                 read_message_history=True,
                 read_messages=True
             )
-            await ch.set_permissions(
-                mods,
-                send_messages=True,
-                read_message_history=True,
-                read_messages=True
-            )
             await msg.edit(content=str(count))
             embed = discord.Embed(
                 title="🥊 | Тикеты",
@@ -266,6 +278,15 @@ class Select(discord.ui.Select):
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
             await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=Close())
+            embed = discord.Embed(
+                title = "🥊 | Тикеты",
+                description = f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: {topic}\n<a:768563657390030971:1041076662546219168> Номер: {count}",
+                color = 0x370acd
+            )
+            global id_
+            id_ = ch.id
+            await notify.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
+
         elif self.values[0] == "Апелляция":
             topic = "Апелляция"
             await interaction.response.send_modal(Appeal())
