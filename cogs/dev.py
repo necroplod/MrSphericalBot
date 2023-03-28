@@ -97,15 +97,22 @@ class dev(commands.Cog):
 
     @commands.command(hidden=True)
     async def adm(self, ctx):
-        c = [m.name for m in ctx.guild.members if m.guild_permissions.administrator]
-        c2 = [m.name for m in ctx.guild.members if m.guild_permissions.ban_members]
-        c3 = [m.name for m in ctx.guild.members if m.guild_permissions.kick_members]
-        c4 = [m.name for m in ctx.guild.members if m.guild_permissions.manage_channels]
-        c5 = [m.name for m in ctx.guild.members if m.guild_permissions.manage_guild]
-        c6 = [m.name for m in ctx.guild.members if m.guild_permissions.manage_roles]
-        c7 = [m.name for m in ctx.guild.members if m.guild_permissions.manage_webhooks]
+        c = [f"<@{m.id}>" for m in ctx.guild.members if m.guild_permissions.administrator]
+        c2 = [f"<@{m.id}>" for m in ctx.guild.members if m.guild_permissions.ban_members]
+        c3 = [f"<@{m.id}>" for m in ctx.guild.members if m.guild_permissions.kick_members]
+        c4 = [f"<@{m.id}>" for m in ctx.guild.members if m.guild_permissions.manage_channels]
+        c5 = [f"<@{m.id}>" for m in ctx.guild.members if m.guild_permissions.manage_guild]
+        c6 = [f"<@{m.id}>" for m in ctx.guild.members if m.guild_permissions.manage_roles]
+        c7 = [f"<@{m.id}>" for m in ctx.guild.members if m.guild_permissions.manage_webhooks]
 
-        await ctx.send(f'админы - {c}\n\nбаны - {c2}\n\nкики - {c3}\n\nканалы - {c4}\n\nсервер - {c5}\n\nроли - {c6}\n\nвебхуки - {c7}')
+        embed = discord.Embed(
+            title = "🥌 | Права",
+            description = f"*Администратор* — {c}\n\n*Бан* — {c2}\n\n*Кик* — {c3}\n\n*Управление каналами* — {c4}\n\n*Управление сервером* — {c5}\n\n*Управление ролями* — {c6}\n\n*Управление вебхуками* — {c7}",
+            color = 0xa0f1bc
+        )
+        embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
+
+        await ctx.send(embed=embed)
 
 
 
