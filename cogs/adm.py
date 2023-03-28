@@ -40,6 +40,7 @@ class adm(commands.Cog):
                 timestamp=msg.created_at,
                 color=msg.author.color
             )
+            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
             embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=msg.author.avatar.url)
             embed.set_image(url=f"{attachment.url}")
             await archive_art.send(embed=embed)
@@ -221,6 +222,41 @@ class adm(commands.Cog):
             embed.set_image(url = file.url)
             await ch.send(embed=embed)
             await interaction.response.send_message('*Доказательства успешно отправлены!*', ephemeral = True)
+
+
+    @app_commands.command(name = "artmany", description = "Сохраните арты в архив!")
+    async def artmany(
+            self, interaction: discord.Interaction,
+            айди: str,
+            айди2: str,
+            айди3: str,
+            айди4: str,
+            айди5: str
+    ):
+        role = interaction.guild.get_role(1071139216580419644)
+
+        if role not in interaction.user.roles:
+            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1071139216580419644>*')
+            return
+        elif role in interaction.user.roles:
+            general_art = discord.utils.get(interaction.guild.channels, id=settings.channels.art)
+            archive_art = discord.utils.get(interaction.guild.channels, id=settings.channels.archive_art)
+            lst = [айди, айди2, айди3, айди4, айди5]
+            for id in lst:
+                msg = await general_art.fetch_message(int(id))
+                attachment = msg.attachments[0]
+
+                embed = discord.Embed(
+                    title="",
+                    description="",
+                    timestamp=msg.created_at,
+                    color=msg.author.color
+                )
+                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=msg.author.avatar.url)
+                embed.set_image(url=f"{attachment.url}")
+                await archive_art.send(embed=embed)
+            await interaction.response.send_message('*Готово!*', ephemeral=True)
 
 
 
