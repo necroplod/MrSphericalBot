@@ -170,7 +170,40 @@ class TicketClose(discord.ui.View):
         logs.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         logsch = discord.utils.get(interaction.guild.channels, id = settings.channels.tickets_logs)
         await logsch.send(embed=logs)
-        await interaction.response.send_message(embeds=[embed, manage], view = Panel())
+        await interaction.response.send_message(embeds=[embed, manage], view = TicketPanel())
+
+    @discord.ui.button(emoji='🔒', style=discord.ButtonStyle.red, label='Передать тикет', custom_id = "close:transfer")
+    async def transfer(self, interaction: discord.Interaction, button: discord.ui.Button):
+        role = interaction.guild.get_role(settings.roles.mods_tickets)
+        notify = interaction.guild.get_channel(settings.channels.ticket_notify)
+        ch = interaction.channel
+        user = interaction.user
+        topic = interaction.channel.topic
+
+        idd = re.search(r'\<@(.*)\>', topic, re.DOTALL).group(1)
+        tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
+        flatten = [msg async for msg in tickets_count.history(limit=100)]
+        msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
+        countt = msg.content
+
+        if role in user.roles:
+            embed = discord.Embed(
+                title = "🥊 | Тикеты",
+                description = f"***Тикет был передан!***\n<a:768563657390030971:1041076662546219168> Автор: <@{idd}>\n<a:768563657390030971:1041076662546219168> Номер: {countt}\n<a:768563657390030971:1041076662546219168> Модератор: <@{interaction.user.id}>",
+                color = 0x370acd
+            )
+            await ch.set_permissions(
+                interaction.user,
+                send_messages=False,
+                read_message_history=False,
+                read_messages=False
+            )
+            global id_
+            id_ = ch.id
+            await notify.send('<@&1071505429462519938>', embed=embed, view=TicketWait())
+            await interaction.response.send_message(f'*Модератор <@{interaction.user.id}> передал тикет другому модератору. Ожидайте.*')
+        else:
+            await interaction.response.send_message(f'**У Вас отсутствует роль <@&{settings.roles.mods_tickets}>!**', ephemeral=True)
 
 
 class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
@@ -225,7 +258,7 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
             color=0x370acd
         )
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-        await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=Close())
+        await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=TicketClose())
 
 class TicketWait(discord.ui.View):
     def __init__(self):
