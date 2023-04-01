@@ -4,28 +4,6 @@ import settings
 import datetime
 from discord.ext import commands
 
-class TicketWait(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-
-    @discord.ui.button(emoji='🎲', style=discord.ButtonStyle.green, label='Принять', custom_id="ticket:waitmod")
-    async def agree(self, interaction: discord.Interaction, button: discord.ui.Button):
-        ch = interaction.guild.get_channel(id_)
-        tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
-        flatten = [msg async for msg in tickets_count.history(limit=100)]
-        msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
-        count = msg.content
-
-
-        await ch.send(f'*Модератор <@{interaction.user.id}> взялся за тикет и скоро здесь будет, ожидайте.*')
-        await ch.set_permissions(
-            interaction.user,
-            send_messages=True,
-            read_message_history=True,
-            read_messages=True
-        )
-        await interaction.response.edit_message(content = f'*Модератор <@{interaction.user.id}> принял тикет №{count}.*', embed=None, view=None)
-
 class TicketPanel(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -261,12 +239,37 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=TicketClose())
 
+        global id_
+        id_ = ch.id
+
         embed = discord.Embed(
             title="🥊 | Тикеты",
             description=f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: Апелляции\n<a:768563657390030971:1041076662546219168> Номер: {count}",
             color=0x370acd
         )
         await notify.send('<@&1071505429462519938>', embed=embed, view=TicketWait())
+
+class TicketWait(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(emoji='🎲', style=discord.ButtonStyle.green, label='Принять', custom_id="ticket:waitmod")
+    async def agree(self, interaction: discord.Interaction, button: discord.ui.Button):
+        ch = interaction.guild.get_channel(id_)
+        tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
+        flatten = [msg async for msg in tickets_count.history(limit=100)]
+        msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
+        count = msg.content
+
+
+        await ch.send(f'*Модератор <@{interaction.user.id}> взялся за тикет и скоро здесь будет, ожидайте.*')
+        await ch.set_permissions(
+            interaction.user,
+            send_messages=True,
+            read_message_history=True,
+            read_messages=True
+        )
+        await interaction.response.edit_message(content = f'*Модератор <@{interaction.user.id}> принял тикет №{count}.*', embed=None, view=None)
 
 class Select(discord.ui.Select):
     def __init__(self):
