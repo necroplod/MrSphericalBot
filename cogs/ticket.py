@@ -213,6 +213,7 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
     why = discord.ui.TextInput(label = "Почему", placeholder = "Почему вы считаете, что наказание было выдано неверно/модератор превысил свои полномочия?", required = True)
     async def on_submit(self, interaction: discord.Interaction):
         guild = interaction.guild
+        notify = interaction.guild.get_channel(settings.channels.appeal_notify)
         tickets = discord.utils.get(guild.channels, name=settings.channels.tickets)
         tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
         flatten = [msg async for msg in tickets_count.history(limit=100)]
@@ -260,21 +261,12 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=TicketClose())
 
-class TicketWait(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-
-    @discord.ui.button(emoji='🎲', style=discord.ButtonStyle.green, label='Принять', custom_id="ticket:waitmod")
-    async def agree(self, interaction: discord.Interaction, button: discord.ui.Button):
-        ch = interaction.guild.get_channel(id_)
-        await ch.send(f'*Модератор <@{interaction.user.id}> взялся за тикет и скоро здесь будет, ожидайте.*')
-        await ch.set_permissions(
-            interaction.user,
-            send_messages=True,
-            read_message_history=True,
-            read_messages=True
+        embed = discord.Embed(
+            title="🥊 | Тикеты",
+            description=f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: Апелляции\n<a:768563657390030971:1041076662546219168> Номер: {count}",
+            color=0x370acd
         )
-        await interaction.response.edit_message(content = f'*Модератор <@{interaction.user.id}> принял тикет №{count}.*', embed=None, view=None)
+        await notify.send('<@&1071505429462519938>', embed=embed, view=TicketWait())
 
 class Select(discord.ui.Select):
     def __init__(self):
@@ -282,20 +274,24 @@ class Select(discord.ui.Select):
             discord.SelectOption(label = "Жалоба", emoji = "🥊", description = "Отправьте жалобу на нарушителя!"),
             discord.SelectOption(label = "Вопрос", emoji = "🔎", description = "Задайте вопрос"),
             discord.SelectOption(label = "Апелляция", emoji = "📨", description = "Подайте апелляцию"),
+            discord.SelectOption(label = "Технический тикет", emoji = "🎳", description = "Хотите вернуть роли или уровень? Тогда Вам сюда.")
         ]
         super().__init__(placeholder = "Выберите тему тикета",max_values=1, min_values=1, options=options)
     async def callback(self, interaction: discord.Interaction):
-        if self.values[0] == "Жалоба" or self.values[0] == "Вопрос":
+        if self.values[0] == "Жалоба" or self.values[0] == "Вопрос" or self.values[0] == "Технический тикет":
             if self.values[0] == "Жалоба":
                 topic = "Жалоба"
             elif self.values[0] == "Вопрос":
                 topic = "Вопрос"
+            elif self.values[0] == "Технический тикет":
+                topic = "Технический тикет"
 
             guild = interaction.guild
             tickets = discord.utils.get(guild.channels, name=settings.channels.tickets)
             tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
             mods = guild.get_role(settings.roles.mods_tickets)
             notify = interaction.guild.get_channel(settings.channels.ticket_notify)
+            tech = interaction.guild.get_channel(settings.channels.tech_ticket)
 
             flatten = [msg async for msg in tickets_count.history(limit=100)]
             msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
@@ -333,7 +329,7 @@ class Select(discord.ui.Select):
                 color=0x370acd
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-            await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=Close())
+            await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=TicketClose())
             embed = discord.Embed(
                 title = "🥊 | Тикеты",
                 description = f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: {topic}\n<a:768563657390030971:1041076662546219168> Номер: {count}",
@@ -341,7 +337,11 @@ class Select(discord.ui.Select):
             )
             global id_
             id_ = ch.id
-            await notify.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
+
+            if self.values[0] == "Технический тикет":
+                await tech.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
+            else:
+                await notify.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
 
         elif self.values[0] == "Апелляция":
             topic = "Апелляция"
@@ -368,7 +368,7 @@ class ticket(commands.Cog):
     async def ticket(self, ctx):
         embed = discord.Embed(
             title = "🥊 | Тикеты",
-            description = "<a:768563657390030971:1041076662546219168> *У Вас есть вопрос или жалоба? По нажатии кнопки бот создаст тикет-канал, в котором вы начнёте разговор с представителем модерации.*",
+            description = "<a:768563657390030971:1041076662546219168> *У Вас есть вопрос, жалоба или хотите вернуть роль или уровень? По нажатии кнопки бот создаст тикет-канал, в котором вы начнёте разговор с представителем модерации.*",
             color = 0x370acd
         )
         embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
