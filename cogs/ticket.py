@@ -4,7 +4,29 @@ import settings
 import datetime
 from discord.ext import commands
 
-class Panel(discord.ui.View):
+class TicketWait(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(emoji='🎲', style=discord.ButtonStyle.green, label='Принять', custom_id="ticket:waitmod")
+    async def agree(self, interaction: discord.Interaction, button: discord.ui.Button):
+        ch = interaction.guild.get_channel(id_)
+        tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
+        flatten = [msg async for msg in tickets_count.history(limit=100)]
+        msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
+        count = msg.content
+
+
+        await ch.send(f'*Модератор <@{interaction.user.id}> взялся за тикет и скоро здесь будет, ожидайте.*')
+        await ch.set_permissions(
+            interaction.user,
+            send_messages=True,
+            read_message_history=True,
+            read_messages=True
+        )
+        await interaction.response.edit_message(content = f'*Модератор <@{interaction.user.id}> принял тикет №{count}.*', embed=None, view=None)
+
+class TicketPanel(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
     @discord.ui.button(emoji='🔓', style=discord.ButtonStyle.green, label='Открыть', custom_id = "panel:open")
@@ -109,7 +131,7 @@ class Panel(discord.ui.View):
         else:
             await interaction.response.send_message(f'**У Вас отсутствует роль <@&{settings.roles.manage_tickets}>!**', ephemeral=True)
 
-class Close(discord.ui.View):
+class TicketClose(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
@@ -150,7 +172,8 @@ class Close(discord.ui.View):
         await logsch.send(embed=logs)
         await interaction.response.send_message(embeds=[embed, manage], view = Panel())
 
-class Appeal(discord.ui.Modal, title = '📨 | Апелляции'):
+
+class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
     mod = discord.ui.TextInput(label = "Модератор", placeholder = "Модератор, выдавший наказание", required = True)
     time = discord.ui.TextInput(label = "Дата и время", placeholder = "Дата и время, когда вам выдали наказание", required = True)
     reason = discord.ui.TextInput(label = "Причина", placeholder="По какой причине(-ам) вам выдали наказание", required = True)
@@ -289,7 +312,7 @@ class Select(discord.ui.Select):
 
         elif self.values[0] == "Апелляция":
             topic = "Апелляция"
-            await interaction.response.send_modal(Appeal())
+            await interaction.response.send_modal(TicketAppeal())
 
 class SelectView(discord.ui.View):
     def __init__(self):
