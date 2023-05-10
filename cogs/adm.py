@@ -25,7 +25,7 @@ class adm(commands.Cog):
         role = interaction.guild.get_role(1071139216580419644)
 
         if role not in interaction.user.roles:
-            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1071139216580419644>*')
+            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1071139216580419644>*', ephemeral = True)
             return
         elif role in interaction.user.roles:
 
@@ -57,7 +57,7 @@ class adm(commands.Cog):
         role = interaction.guild.get_role(1071139413586882652)
 
         if role not in interaction.user.roles:
-            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1071139413586882652>*')
+            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1071139413586882652>*', ephemeral = True)
             return
         elif role in interaction.user.roles:
             if not канал.permissions_for(interaction.guild.me).send_messages or not канал.permissions_for(interaction.guild.me).add_reactions:
@@ -102,7 +102,6 @@ class adm(commands.Cog):
             embed1.set_footer(text=f"Розыгрыш закончится")
             msg = await канал.send(embed=embed1)
             await msg.add_reaction("🎉")
-            await interaction.response.send_message('*Готово!*', ephemeral=True)
 
             await asyncio.sleep(timewait)
             message = await канал.fetch_message(msg.id)
@@ -123,27 +122,6 @@ class adm(commands.Cog):
                 color=discord.Color.blue())
             )
 
-    @app_commands.command(name = "archive", description = "Заархивируйте канал")
-    async def archive(
-            self, interaction: discord.Interaction,
-            канал: Union[discord.TextChannel]
-    ):
-        role = interaction.guild.get_role(1071139692914946109)
-
-        if role not in interaction.user.roles:
-            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1071139692914946109>*')
-            return
-        elif role in interaction.user.roles:
-            category = discord.utils.get(interaction.guild.channels, name=settings.channels.main_archive)
-            ch = канал
-            await ch.edit(
-                name=f'{канал.name}_архив',
-                sync_permissions=True,
-                category=category,
-                reason=f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
-            )
-            await interaction.response.send_message('*Готово!*', ephemeral=True)
-
     @app_commands.command(name = "poll", description = "Создайте опрос")
     async def poll(
             self, interaction: discord.Interaction,
@@ -159,7 +137,7 @@ class adm(commands.Cog):
         role = interaction.guild.get_role(1071139871105744977)
 
         if role not in interaction.user.roles:
-            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1071139871105744977>*')
+            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1071139871105744977>*', ephemeral = True)
             return
         elif role in interaction.user.roles:
             one = f":one: {вариант1}"
@@ -171,13 +149,7 @@ class adm(commands.Cog):
 
             embed = discord.Embed(
                 title='🎁 | Опрос',
-                description=f"""
-            **{тема}**
-            {one}
-            {two}
-            {three}
-            {four}
-            {five}
+                description=f"""**{тема}**\n{one}\n{two}\n{three}\n{four}\n{five}
             """,
                 color=0x007f5c
             )
@@ -200,21 +172,16 @@ class adm(commands.Cog):
             время: str,
             file: discord.Attachment
         ):
-        role = interaction.guild.get_role(997425457618223124)
+        role = interaction.guild.get_role(1103258122736369675)
 
         if role not in interaction.user.roles:
-            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&997425457618223124>*')
+            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1103258122736369675>*', ephemeral = True)
             return
         elif role in interaction.user.roles:
             ch = self.client.get_channel(settings.channels.proof)
             embed = discord.Embed(
                 title = "🧶 | Доказательства",
-                description = f'''
-                <a:768563657390030971:1041076662546219168>  **Модератор:** <@{interaction.user.id}>
-                <a:768563657390030971:1041076662546219168>  **Нарушитель:** <@{нарушитель.id}>
-                <a:768563657390030971:1041076662546219168>  **Время наказания:** {время}
-                <a:768563657390030971:1041076662546219168>  **Доказательство:** ||{file.url}||
-                ''',
+                description = f'''<a:768563657390030971:1041076662546219168>  **Модератор:** <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168>  **Нарушитель:** <@{нарушитель.id}>\n<a:768563657390030971:1041076662546219168>  **Время наказания:** {время}\n<a:768563657390030971:1041076662546219168>  **Доказательство:** ||{file.url}||''',
                 color = 0x98c379,
                 timestamp = datetime.datetime.now()
             )

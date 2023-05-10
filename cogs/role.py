@@ -127,13 +127,11 @@ class AccessSelectAdd(discord.ui.Select):
         options = [
             discord.SelectOption(label="Нюхай космос", emoji="🌌", description="Что стоишь? Нюхай!"),
             discord.SelectOption(label="Дискуссии", emoji="💢", description="Ладно."),
-            discord.SelectOption(label="Маппер", emoji="🗺", description="Карты, карты и еще раз карты.."),
         ]
         super().__init__(placeholder="Добавить роль", max_values=1, min_values=0, options=options, custom_id = 'role:accessadd')
 
     async def callback(self, interaction: discord.Interaction):
         dis = interaction.guild.get_role(997425508608397312)
-        map = interaction.guild.get_role(997425513889017957)
         space = interaction.guild.get_role(1046403300435697754)
         roles = interaction.user.roles
 
@@ -149,7 +147,6 @@ class AccessSelectAdd(discord.ui.Select):
 
         if self.values[0] == "Нюхай космос": give = space
         if self.values[0] == "Дискуссии": give = dis
-        if self.values[0] == "Маппер": give = map
 
         if await process(give) and check(give) is False:
             await interaction.response.send_message(f'*Роль <@&{give.id}> успешно выдана!*', ephemeral = True)
@@ -161,13 +158,11 @@ class AccessSelectRemove(discord.ui.Select):
         options = [
             discord.SelectOption(label="Нюхай космос", emoji="🌌", description="Что стоишь? Нюхай!"),
             discord.SelectOption(label="Дискуссии", emoji="💢", description="Ладно."),
-            discord.SelectOption(label="Маппер", emoji="🗺", description="Карты, карты и еще раз карты.."),
         ]
         super().__init__(placeholder="Убрать роль", max_values=1, min_values=0, options=options, custom_id = 'role:accessremove')
 
     async def callback(self, interaction: discord.Interaction):
         dis = interaction.guild.get_role(997425508608397312)
-        map = interaction.guild.get_role(997425513889017957)
         space = interaction.guild.get_role(1046403300435697754)
         roles = interaction.user.roles
 
@@ -183,7 +178,6 @@ class AccessSelectRemove(discord.ui.Select):
 
         if self.values[0] == "Нюхай космос": give = space
         if self.values[0] == "Дискуссии": give = dis
-        if self.values[0] == "Маппер": give = map
 
         if check(give) and await process(give) is False:
             await interaction.response.send_message(f'*Роль <@&{give.id}> успешно убрана!*', ephemeral = True)
@@ -230,7 +224,6 @@ class NotifySelectAdd(discord.ui.Select):
             discord.SelectOption(label="Опросы", emoji="📊", description="Опросы и голосования"),
             discord.SelectOption(label="События", emoji="🎇", description="Ивенты и многое другое"),
             discord.SelectOption(label="Оживляй чат, лол", emoji="🐒", description="Особенная роль"),
-            discord.SelectOption(label="Оживляй дискуссии, лол", emoji="🐒", description="Тоже особенная роль.")
         ]
         super().__init__(placeholder="Добавить роль", max_values=1, min_values=0, options=options, custom_id = 'role:notifyadd')
 
@@ -240,7 +233,6 @@ class NotifySelectAdd(discord.ui.Select):
         poll = interaction.guild.get_role(997425510265135145)
         event = interaction.guild.get_role(997425511238209566)
         deadchat = interaction.guild.get_role(997425504485384253)
-        deaddis = interaction.guild.get_role(1088156020393648268)
         roles = interaction.user.roles
 
         def check(rr):
@@ -258,7 +250,6 @@ class NotifySelectAdd(discord.ui.Select):
         if self.values[0] == "Опросы": give = poll
         if self.values[0] == "События": give = event
         if self.values[0] == "Оживляй чат, лол": give = deadchat
-        if self.values[0] == "Оживляй дискуссии, лол": give = deaddis
 
 
         if await process(give) and check(give) is False:
@@ -274,7 +265,6 @@ class NotifySelectRemove(discord.ui.Select):
             discord.SelectOption(label="Опросы", emoji="📊", description="Опросы и голосования"),
             discord.SelectOption(label="События", emoji="🎇", description="Ивенты и многое другое"),
             discord.SelectOption(label="Оживляй чат, лол", emoji="🐒", description="Особенная роль"),
-            discord.SelectOption(label="Оживляй дискуссии, лол", emoji="🐒", description="Тоже особенная роль.")
         ]
         super().__init__(placeholder="Убрать роль", max_values=1, min_values=0, options=options, custom_id = 'role:notifyremove')
 
@@ -284,7 +274,6 @@ class NotifySelectRemove(discord.ui.Select):
         poll = interaction.guild.get_role(997425510265135145)
         event = interaction.guild.get_role(997425511238209566)
         deadchat = interaction.guild.get_role(997425504485384253)
-        deaddis = interaction.guild.get_role(1088156020393648268)
         roles = interaction.user.roles
 
         def check(rr):
@@ -302,7 +291,6 @@ class NotifySelectRemove(discord.ui.Select):
         if self.values[0] == "Опросы": give = poll
         if self.values[0] == "События": give = event
         if self.values[0] == "Оживляй чат, лол": give = deadchat
-        if self.values[0] == "Оживляй дискуссии, лол": give = deaddis
 
         if check(give) and await process(give):
             await interaction.response.send_message(f'*Роль <@&{give.id}> успешно убрана!*', ephemeral = True)
@@ -338,6 +326,7 @@ class role(commands.Cog):
         self.client = client
 
     @commands.command()
+    @commands.has_permissions(administrator = True)
     async def role(self, ctx):
         country = discord.Embed(
             title = "・▬▬▬ Откуда вы? ▬▬▬・",
@@ -346,12 +335,12 @@ class role(commands.Cog):
         )
         access = discord.Embed(
             title = "・▬▬▬ Роли Доступа ▬▬▬・",
-            description = "<a:1041076662546219168:1041076662546219168> 🗺️ — <@&997425513889017957> — Доступ к <#997425637893607445>\n<a:1041076662546219168:1041076662546219168> 🔭 — <@&1046403300435697754> — Доступ к <#1046391794977480704>\n<a:1041076662546219168:1041076662546219168> 🗯 — <@&997425508608397312> — Доступ к <#1046377259415646219>, <#1025037833888600064>, <#1046377188146028635>",
+            description = "<a:1041076662546219168:1041076662546219168> 🔭 — <@&1046403300435697754> — Доступ к <#1046391794977480704>\n<a:1041076662546219168:1041076662546219168> 🗯 — <@&997425508608397312> — Доступ к <#1046377259415646219>, <#1025037833888600064>, <#1046377188146028635>",
             color = 0xdd8d03
         )
         notify = discord.Embed(
             title = "・▬▬▬ Уведомления ▬▬▬・",
-            description = '<a:1041076662546219168:1041076662546219168> :bell: — <@&997425507836645506> — Уведомление о новых видео\n<a:1041076662546219168:1041076662546219168> :newspaper: — <@&997425506960015410> — Новости сервера\n<a:1041076662546219168:1041076662546219168> :bar_chart: — <@&997425510265135145> — Опросы и голосования\n<a:1041076662546219168:1041076662546219168> :fireworks: — <@&997425511238209566> — Обычные викторины, события и ивенты. \n<a:1041076662546219168:1041076662546219168> :monkey: — <@&997425504485384253> —  Особенная роль. Единственная из автовыдаваемых ролей, изменяющая цвет. Вы берете эту роль на свой страх и риск!\n<a:1041076662546219168:1041076662546219168> :monkey: — <@&1088156020393648268> —  Тоже самое, что и оживляй чат, но только для каналов категории "Дискуссии"',
+            description = '<a:1041076662546219168:1041076662546219168> :bell: — <@&997425507836645506> — Уведомление о новых видео\n<a:1041076662546219168:1041076662546219168> :newspaper: — <@&997425506960015410> — Новости сервера\n<a:1041076662546219168:1041076662546219168> :bar_chart: — <@&997425510265135145> — Опросы и голосования\n<a:1041076662546219168:1041076662546219168> :fireworks: — <@&997425511238209566> — Обычные викторины, события и ивенты. \n<a:1041076662546219168:1041076662546219168> :monkey: — <@&997425504485384253> —  Особенная роль. Единственная из автовыдаваемых ролей, изменяющая цвет. Вы берете эту роль на свой страх и риск!',
             color = 0xdd8d03
         )
         gender = discord.Embed(

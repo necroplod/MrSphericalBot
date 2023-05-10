@@ -2,6 +2,7 @@ from config import config
 import settings
 import cogs.ticket
 import cogs.role
+import cogs.info
 
 import discord
 from discord import Intents
@@ -32,6 +33,7 @@ class Setup(commands.Bot):
 		self.add_view(cogs.role.AccessView())
 		self.add_view(cogs.role.GenderView())
 		self.add_view(cogs.role.NotifyView())
+		self.add_view(cogs.info.VerifyView())
 		for extension in settings.extensions.cogs:
 			try:
 				await self.load_extension(extension)

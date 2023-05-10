@@ -26,48 +26,6 @@ class TicketPanel(discord.ui.View):
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         await interaction.response.send_message(embed=embed)
 
-    @discord.ui.button(emoji = '🀄', style = discord.ButtonStyle.blurple, label = 'В архив', custom_id = "panel:archive")
-    async def archive(self, interaction: discord.Interaction, button: discord.ui.Button):
-        user = interaction.user
-        ch = interaction.channel
-        role = interaction.guild.get_role(settings.roles.archive_channels)
-        if role in user.roles:
-            category = discord.utils.get(interaction.guild.channels, name=settings.channels.ticket_archive)
-            if len(category.channels) > 48:
-                embed = discord.Embed(
-                    title="📚 | Архив Каналов",
-                    description="<a:768563657390030971:1041076662546219168> **Архив засорился!**",
-                    color=0x674ea7
-                )
-                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-                embed.set_image(url="https://media.tenor.com/r3t0LfS0dCwAAAAd/toilet-meme.gif")
-                await interaction.response.edit_message(view=None, embed=embed)
-            else:
-                embed = discord.Embed(
-                    title="📚 | Архив Каналов",
-                    description="<a:768563657390030971:1041076662546219168> **Перемещение тикета в архив....**",
-                    color=0x674ea7
-                )
-                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-                await interaction.response.edit_message(view=None, embed=embed)
-                await ch.edit(
-                    sync_permissions=True,
-                    category=category,
-                    reason=f'Архивирование канала | {interaction.user.name}#{interaction.user.discriminator}'
-                )
-                logs = discord.Embed(
-                    title="🥊 | Тикеты",
-                    description=f'''
-                    <a:768563657390030971:1041076662546219168> **Действие:** Архивация тикета
-                    <a:768563657390030971:1041076662546219168> **Тикет:** {ch.name}
-                    <a:768563657390030971:1041076662546219168> **Модератор:** <@{interaction.user.id}>''',
-                    color=0x370acd,
-                )
-                logs.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-                logsch = discord.utils.get(interaction.guild.channels, id=settings.channels.tickets_logs)
-                await logsch.send(embed=logs)
-        else:
-            await interaction.response.send_message(f'**У Вас отсутствует роль <@&{settings.roles.archive_channels}>!**', ephemeral=True)
     @discord.ui.button(emoji='⛔', style=discord.ButtonStyle.red, label='Удалить', custom_id = "panel:close")
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
         user = interaction.user
@@ -281,72 +239,76 @@ class Select(discord.ui.Select):
         ]
         super().__init__(placeholder = "Выберите тему тикета",max_values=1, min_values=1, options=options)
     async def callback(self, interaction: discord.Interaction):
+        mute = interaction.guild.get_role(settings.roles.mute)
         if self.values[0] == "Жалоба" or self.values[0] == "Вопрос" or self.values[0] == "Технический тикет":
-            if self.values[0] == "Жалоба":
-                topic = "Жалоба"
-            elif self.values[0] == "Вопрос":
-                topic = "Вопрос"
-            elif self.values[0] == "Технический тикет":
-                topic = "Технический тикет"
-
-            guild = interaction.guild
-            tickets = discord.utils.get(guild.channels, name=settings.channels.tickets)
-            tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
-            mods = guild.get_role(settings.roles.mods_tickets)
-            notify = interaction.guild.get_channel(settings.channels.ticket_notify)
-            tech = interaction.guild.get_channel(settings.channels.tech_ticket)
-
-            flatten = [msg async for msg in tickets_count.history(limit=100)]
-            msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
-            global count
-            count = msg.content
-            count = count[1:]
-            count = int(f"1{count}")
-            count = count + 1
-            count = str(count)
-            count = count[1:]
-            count = str(f"0{count}")
-
-            await interaction.response.send_message('*Создание тикета.. Ожидайте.*', ephemeral=True)
-            ch = await guild.create_text_channel(
-                name=f'ticket-{count}',
-                category=tickets,
-                topic=f"**Автор:** <@{interaction.user.id}>\n**Номер тикета:** {count}\n**Тема:** {topic}",
-                reason=f"Открытие тикета | {interaction.user.name}#{interaction.user.discriminator}"
-            )
-            await ch.set_permissions(
-                guild.default_role,
-                view_channel=False,
-                send_messages=False,
-            )
-            await ch.set_permissions(
-                interaction.user,
-                send_messages=True,
-                read_message_history=True,
-                read_messages=True
-            )
-            await msg.edit(content=str(count))
-            embed = discord.Embed(
-                title="🥊 | Тикеты",
-                description=f"*Поддержка скоро свяжется с вами.\nДля закрытия нажмите кнопку ниже.*\n*Информация для поддержки:*\n```Тема: {topic}```",
-                color=0x370acd
-            )
-            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-            await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=TicketClose())
-            embed = discord.Embed(
-                title = "🥊 | Тикеты",
-                description = f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: {topic}\n<a:768563657390030971:1041076662546219168> Номер: {count}",
-                color = 0x370acd
-            )
-            global id_
-            id_ = ch.id
-
-            if self.values[0] == "Технический тикет":
-                await tech.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
+            if mute in interaction.user.roles:
+                await interaction.response.send_message('Вы находитесь в муте! У Вас есть право только открыть апелляцию.', ephemeral=True)
             else:
-                await notify.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
+                if self.values[0] == "Жалоба":
+                    topic = "Жалоба"
+                elif self.values[0] == "Вопрос":
+                    topic = "Вопрос"
+                elif self.values[0] == "Технический тикет":
+                    topic = "Технический тикет"
 
-        elif self.values[0] == "Апелляция":
+                guild = interaction.guild
+                tickets = discord.utils.get(guild.channels, name=settings.channels.tickets)
+                tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
+                mods = guild.get_role(settings.roles.mods_tickets)
+                notify = interaction.guild.get_channel(settings.channels.ticket_notify)
+                tech = interaction.guild.get_channel(settings.channels.tech_ticket)
+
+                flatten = [msg async for msg in tickets_count.history(limit=100)]
+                msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
+                global count
+                count = msg.content
+                count = count[1:]
+                count = int(f"1{count}")
+                count = count + 1
+                count = str(count)
+                count = count[1:]
+                count = str(f"0{count}")
+
+                await interaction.response.send_message('*Создание тикета.. Ожидайте.*', ephemeral=True)
+                ch = await guild.create_text_channel(
+                    name=f'ticket-{count}',
+                    category=tickets,
+                    topic=f"**Автор:** <@{interaction.user.id}>\n**Номер тикета:** {count}\n**Тема:** {topic}",
+                    reason=f"Открытие тикета | {interaction.user.name}#{interaction.user.discriminator}"
+                )
+                await ch.set_permissions(
+                    guild.default_role,
+                    view_channel=False,
+                    send_messages=False,
+                )
+                await ch.set_permissions(
+                    interaction.user,
+                    send_messages=True,
+                    read_message_history=True,
+                    read_messages=True
+                )
+                await msg.edit(content=str(count))
+                embed = discord.Embed(
+                    title="🥊 | Тикеты",
+                    description=f"*Поддержка скоро свяжется с вами.\nДля закрытия нажмите кнопку ниже.*\n*Информация для поддержки:*\n```Тема: {topic}```",
+                    color=0x370acd
+                )
+                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=TicketClose())
+                embed = discord.Embed(
+                    title = "🥊 | Тикеты",
+                    description = f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: {topic}\n<a:768563657390030971:1041076662546219168> Номер: {count}",
+                    color = 0x370acd
+                )
+                global id_
+                id_ = ch.id
+
+                if self.values[0] == "Технический тикет":
+                    await tech.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
+                else:
+                    await notify.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
+
+        if self.values[0] == "Апелляция":
             topic = "Апелляция"
             await interaction.response.send_modal(TicketAppeal())
 
