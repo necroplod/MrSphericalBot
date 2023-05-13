@@ -26,11 +26,17 @@ class stats(commands.Cog):
         bots_ch = self.client.get_channel(settings.stats.bots)
         boosts_ch = self.client.get_channel(settings.stats.boosts)
         boosts_count = guild.premium_subscription_count
+        status_ch = self.client.get_channel(settings.stats.status)
+
+        onl = sum(member.status==discord.Status.online and not member.bot for member in guild.members)
+        dnd = sum(member.status==discord.Status.dnd and not member.bot for member in guild.members)
+        idle = sum(member.status == discord.Status.idle and not member.bot for member in guild.members)
 
         await discord.VoiceChannel.edit(all_ch, name=f"🤠・Всего: {all}")
         await discord.VoiceChannel.edit(member_ch, name=f"🎃・Участников: {members}")
         await discord.VoiceChannel.edit(bots_ch, name = f"👾・Ботов: {bots}")
         await discord.VoiceChannel.edit(boosts_ch, name=f"💎・Бустов: {boosts_count}")
+        await discord.VoiceChannel.edit(status_ch, name=f"🟢{onl} ⛔{dnd} 🌙{idle}")
 
     @commands.Cog.listener()
     async def on_ready(self):
