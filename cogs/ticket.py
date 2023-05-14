@@ -41,7 +41,7 @@ class TicketPanel(discord.ui.View):
                     message_content = f"*{message.created_at.strftime('%d.%m %H:%M:%S')}* <@{message.author.id}>: *{message.clean_content}*"
                     messages.append(message_content)
 
-            logsch = discord.utils.get(interaction.guild.channels, id=settings.channels.tickets_logs)
+            logsch = discord.utils.get(interaction.guild.channels, id=settings.logs.ticket)
 
             logs = discord.Embed(
                 title="🥊 | Тикеты",
@@ -104,7 +104,7 @@ class TicketClose(discord.ui.View):
             color = 0x370acd,
         )
         logs.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-        logsch = discord.utils.get(interaction.guild.channels, id = settings.channels.tickets_logs)
+        logsch = discord.utils.get(interaction.guild.channels, id = settings.logs.ticket)
         await logsch.send(embed=logs)
         await interaction.response.send_message(embeds=[embed, manage], view = TicketPanel())
 

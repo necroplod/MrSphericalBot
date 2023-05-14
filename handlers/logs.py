@@ -39,6 +39,85 @@ class logs(commands.Cog):
         if message.channel.id == settings.channels.wilds and message.content == 'sync':
             await self.client.tree.sync()
 
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        msg = self.client.get_channel(settings.logs.msg)
+
+        if before.author.bot:
+            return
+        embed = discord.Embed(
+            description=f"*[Сообщение]({before.jump_url}) было отредактировано*\n\n***Старое содержимое:***```{before.content}```***Новое содержимое:***```{after.content}```\n",
+            color=0xa77fb3,
+            timestamp=datetime.datetime.now()
+        )
+        embed.add_field(name='Автор:', value=f'*{before.author.name}* (<@{before.author.id}>)', inline=True)
+        embed.add_field(name='Канал:', value=f'*{before.channel.name}* (<#{before.channel.id}>)', inline=True)
+        embed.add_field(name='Айди:', value=f'*{before.id}*', inline=True)
+        embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
+        await msg.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        msg = self.client.get_channel(settings.logs.msg)
+
+        if message.author.bot:
+            return
+        embed = discord.Embed(
+            description=f"*Сообщение было удалено*\n\n***Cодержимое:***```{message.content}```\n",
+            color=0xa77fb3,
+            timestamp=datetime.datetime.now()
+        )
+        embed.add_field(name='Автор:', value=f'*{message.author.name}* (<@{message.author.id}>)', inline=True)
+        embed.add_field(name='Канал:', value=f'*{message.channel.name}* (<#{message.channel.id}>)', inline=True)
+        embed.add_field(name='Айди:', value=f'*{message.id}*', inline=True)
+        embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
+        await msg.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_member_update(self, before, after):
+        role = self.client.get_channel(settings.logs.role)
+        bef = [r.mention for r in before.roles]
+        aft = [r.mention for r in  after.roles]
+        if before.roles != after.roles:
+            embed = discord.Embed(
+                description=f"*Роли участника были изменены*\n",
+                color=0xd0d3d5,
+                timestamp=datetime.datetime.now()
+            )
+            embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
+            embed.add_field(name = 'Участник:', value = f'*{before.name}* (<@{before.id}>)', inline=True)
+            embed.add_field(name = 'Роли до:', value = "\n".join(bef), inline=True)
+            embed.add_field(name = 'Роли после:', value = "\n".join(aft), inline=True)
+            await role.send(embed=embed)
+            
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        welcome = self.client.get_channel(settings.logs.welcome)
+        embed = discord.Embed(
+            description = f"*Участник **{member.name}**(<@{member.id}>) присоединился к серверу*",
+            color=0x35a661,
+            timestamp=datetime.datetime.now()
+        )
+        embed.set_thumbnail(url = member.avatar.url)
+        embed.add_field(name = "Дата регистрации:", value = f"*{member.created_at.strftime('%d.%m.%Y')}*")
+        embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
+        await welcome.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        welcome = self.client.get_channel(settings.logs.welcome)
+        r = [r.mention for r in member.roles]
+        embed = discord.Embed(
+            description = f"*Участник **{member.name}**(<@{member.id}>) покинул сервер*",
+            color=0xa60530,
+            timestamp=datetime.datetime.now()
+        )
+        embed.set_thumbnail(url = member.avatar.url)
+        embed.add_field(name = "Дата регистрации:", value = f"*{member.created_at.strftime('%d.%m.%Y')}*")
+        embed.add_field(name = 'Роли:', value = "\n".join(r), inline=True)
+        embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
+        await welcome.send(embed=embed)
+
 
 
 async def setup(client):
