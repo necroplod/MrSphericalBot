@@ -225,6 +225,14 @@ class adm(commands.Cog):
                 await archive_art.send(embed=embed)
             await interaction.response.send_message('*Готово!*', ephemeral=True)
 
+    @app_commands.command(name = "emid", description = "Узнайте айди эмодзи!")
+    async def emid(
+            self, interaction: discord.Interaction,
+            эмодзи: str
+    ):
+        for em in interaction.guild.emojis:
+            if em.name == эмодзи: await interaction.response.send_message(f'*<:{em.name}:{em.id}> — {em.id}*', ephemeral = True)
+
 
 
 async def setup(client):
