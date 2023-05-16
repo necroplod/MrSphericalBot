@@ -13,22 +13,30 @@ class suggest(commands.Cog):
         channel = self.client.get_channel(message.channel.id)
 
         if message.channel.id in settings.channels.suggest:
-            if message.author.bot:
-                return
+            if message.author.bot: return
             else:
-                if message.content.startswith('^'):
-                    return
-                if message.content.startswith(':'):
-                    return
+                if message.content.startswith('^') or message.content.startswith(':'): return
                 else:
-                    embed = discord.Embed(
-                        title = "",
-                        description = f'{message.author.mention} — {message.content}',
-                        timestamp = message.created_at,
-                        color = 0xfc652c
-                    )
-                    embed.set_author(name = f"Идея от {message.author.display_name}", icon_url = message.author.avatar.url)
-                    embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+                    if message.attachments == 0:
+                        embed = discord.Embed(
+                            title = "",
+                            description = f'{message.author.mention} — {message.content}',
+                            timestamp = message.created_at,
+                            color = 0xfc652c
+                        )
+                        embed.set_author(name = f"Идея от {message.author.display_name}", icon_url = message.author.avatar.url)
+                        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
+                    else:
+                        att = message.attachments[0]
+                        embed = discord.Embed(
+                            title = "",
+                            description = f'{message.author.mention} — {message.content}',
+                            timestamp = message.created_at,
+                            color = 0xfc652c
+                        )
+                        embed.set_author(name = f"Идея от {message.author.display_name}", icon_url = message.author.avatar.url)
+                        embed.set_image(url = att.url)
+                        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
                     await message.delete()
                     msg1 = await channel.send(embed=embed)
                     if message.channel.id != settings.channels.todo:
