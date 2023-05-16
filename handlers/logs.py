@@ -114,6 +114,7 @@ class logs(commands.Cog):
         )
         embed.set_thumbnail(url = member.avatar.url)
         embed.add_field(name = "Дата регистрации:", value = f"*{member.created_at.strftime('%d.%m.%Y')}*")
+        embed.add_field(name = "Дата захода:", value=f"*{member.joined_at.strftime('%d.%m.%Y')}*")
         embed.add_field(name = 'Роли:', value = "\n".join(r), inline=True)
         embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
         await welcome.send(embed=embed)
