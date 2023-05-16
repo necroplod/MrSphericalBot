@@ -13,11 +13,11 @@ class Account():
 	if config.CANARY:
 		prefix = config.prefix.CANARY
 		token = config.token.CANARY
-		game = 'c.help'
+		game = '/help'
 	else:
 		prefix = config.prefix.MAIN
 		token = config.token.MAIN
-		game = 's.help'
+		game = '/help'
 class Setup(commands.Bot):
 	def main(self):	
 		self.remove_command('help')
