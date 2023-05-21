@@ -17,7 +17,7 @@ class suggest(commands.Cog):
             else:
                 if message.content.startswith('^') or message.content.startswith(':'): return
                 else:
-                    if message.attachments == 0:
+                    if message.attachments == []:
                         embed = discord.Embed(
                             title = "",
                             description = f'{message.author.mention} — {message.content}',
