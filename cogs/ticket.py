@@ -88,6 +88,16 @@ class TicketClose(discord.ui.View):
             read_message_history=True,
             read_messages=True
         )
+        await ch.set_permissions(
+            interaction.guild.get_member(int(idd)),
+            send_messages=False,
+            view_channel=False
+        )
+        await ch.set_permissions(
+            interaction.guild.default_role,
+            send_messages=False,
+            view_channel=False
+        )
         embed = discord.Embed(
             title="🥊 | Тикеты",
             description=f"<a:768563657390030971:1041076662546219168>  *Тикет закрыт <@{interaction.user.id}>*",
@@ -106,6 +116,9 @@ class TicketClose(discord.ui.View):
         logs.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         logsch = discord.utils.get(interaction.guild.channels, id = settings.logs.ticket)
         await logsch.send(embed=logs)
+
+
+
         await interaction.response.send_message(embeds=[embed, manage], view = TicketPanel())
 
     @discord.ui.button(emoji='🔒', style=discord.ButtonStyle.red, label='Передать тикет', custom_id = "close:transfer")
@@ -134,8 +147,6 @@ class TicketClose(discord.ui.View):
                 read_message_history=False,
                 read_messages=False
             )
-            global id_
-            id_ = ch.id
             await notify.send('<@&1071505429462519938>', embed=embed, view=TicketWait())
             await interaction.response.send_message(f'*Модератор <@{interaction.user.id}> передал тикет другому модератору. Ожидайте.*')
         else:
@@ -197,15 +208,15 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=TicketClose())
 
-        global id_
-        id_ = ch.id
+        db = interaction.guild.get_channel(settings.misc.ticketdb)
+        await db.send(f'|{count}| [{interaction.user.id}] -{ch.id}-')
 
         embed = discord.Embed(
             title="🥊 | Тикеты",
             description=f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: Апелляции\n<a:768563657390030971:1041076662546219168> Номер: {count}",
             color=0x370acd
         )
-        await notify.send('<@&1071505429462519938>', embed=embed, view=TicketWait())
+        await notify.send(f'<@&1071505429462519938>', embed=embed, view=TicketWait())
 
 class TicketWait(discord.ui.View):
     def __init__(self):
@@ -213,15 +224,16 @@ class TicketWait(discord.ui.View):
 
     @discord.ui.button(emoji='🎲', style=discord.ButtonStyle.green, label='Принять', custom_id="ticket:waitmod")
     async def agree(self, interaction: discord.Interaction, button: discord.ui.Button):
-        ch = interaction.guild.get_channel(id_)
-        tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
-        flatten = [msg async for msg in tickets_count.history(limit=100)]
-        msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
-        count = msg.content
+        abc = interaction.guild.get_channel(settings.misc.ticketdb)
+        msg = abc.last_message.content
+
+        count = re.search(r'\|(.*)\|', msg, re.DOTALL).group(1)
+        ch = re.search(r'\-(.*)\-', msg, re.DOTALL).group(1)
+        ch_ = interaction.guild.get_channel(int(ch))
 
 
-        await ch.send(f'*Модератор <@{interaction.user.id}> взялся за тикет и скоро здесь будет, ожидайте.*')
-        await ch.set_permissions(
+        await ch_.send(f'*Модератор <@{interaction.user.id}> взялся за тикет и скоро здесь будет, ожидайте.*')
+        await ch_.set_permissions(
             interaction.user,
             send_messages=True,
             read_message_history=True,
@@ -300,8 +312,9 @@ class Select(discord.ui.Select):
                     description = f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: {topic}\n<a:768563657390030971:1041076662546219168> Номер: {count}",
                     color = 0x370acd
                 )
-                global id_
-                id_ = ch.id
+
+                db = interaction.guild.get_channel(settings.misc.ticketdb)
+                await db.send(f'|{count}| [{interaction.user.id}] -{ch.id}-')
 
                 if self.values[0] == "Технический тикет":
                     await tech.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
