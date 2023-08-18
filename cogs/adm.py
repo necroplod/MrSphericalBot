@@ -10,6 +10,48 @@ from discord.ui.modal import Modal
 from discord import app_commands
 from typing import Union, Literal, Optional
 
+class RecruitModal(discord.ui.Modal, title = '🏆 | Заявка'):
+    post = discord.ui.TextInput(label = "Должность", placeholder = "Актив менеджер, модератор и т.д.", required = True)
+    nameage = discord.ui.TextInput(label = "Имя, возраст", placeholder = "Иван, 16 лет...", required=True)
+    skill = discord.ui.TextInput(label = "Особые навыки", required=True)
+    time = discord.ui.TextInput(label = "Сколько готовы уделять серверу?", placeholder = "3-5 часов", required=True)
+    why = discord.ui.TextInput(label = "Почему мы должны взять именно Вас?", required = True)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        ch = interaction.guild.get_channel(settings.channels.recruit)
+        user = interaction.user
+
+        embed = discord.Embed(title = "🏆 | Заявка", color = 0xcfb53b)
+
+        embed.add_field(name = "Основное:", value = f"<:sunsmirk:1008138014410674299>  Участник <@{user.id}>\n<:Poslkastrong:1062849475808350238>  Айди: {user.id}\n<:Vo:1079126733095174296>  Дата регистрации: **{user.created_at.strftime('%d.%m.%Y')}**", inline = False)
+        embed.add_field(name = "Сервер:", value = f"<:Switzerland:1047955071612244059>  Дата захода: **{user.joined_at.strftime('%d.%m.%Y')}**\n<:krutoi:1071734769395716116>  Высшая роль: <@&{user.top_role.id}>", inline = False)
+        embed.add_field(name = "<:Nasaniash:1063562901958438922>  Заявка:", value = f"{self.post.value}\n{self.nameage.value}\n{self.skill.value}\n{self.time.value}\n{self.why.value}", inline = False)
+
+        embed.set_thumbnail(url = interaction.user.avatar.url)
+        embed.set_footer(icon_url = settings.misc.avatar_url, text = settings.misc.footer)
+
+        await ch.send(embed=embed)
+        await interaction.response.send_message('*Отправлено!*', ephemeral = True)
+
+class RecruitView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+    @discord.ui.button(emoji='🎲', style=discord.ButtonStyle.green, label = 'Отправить заявку', custom_id = "recruit_view:create")
+    async def create(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(RecruitModal())
+    @discord.ui.button(emoji='🎯', style=discord.ButtonStyle.red, label='Закрыть набор',custom_id="recruit_view:close")
+    async def close(self, interaction: discord.Interaction, button: discord.ui.Button):
+        user = interaction.user
+        if user.guild_permissions.administrator:
+            embed = discord.Embed(
+                title = "🏆 | Заявка",
+                description = f">>> *Набор в персонал был закрыт администратором <@{user.id}>.\nВсем спасибо за участие, быть может повезет в следующий раз...*",
+                color = 0x9c3f3f
+            )
+            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+            await interaction.response.edit_message(embed=embed, view = None)
+        else:
+            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь права администратора!*', ephemeral=True)
 
 class adm(commands.Cog):
 
@@ -225,13 +267,18 @@ class adm(commands.Cog):
                 await archive_art.send(embed=embed)
             await interaction.response.send_message('*Готово!*', ephemeral=True)
 
-    @app_commands.command(name = "emid", description = "Узнайте айди эмодзи!")
-    async def emid(
+
+    @app_commands.command(name = "recruit", description = "Создание набора в персонал")
+    async def recruit(
             self, interaction: discord.Interaction,
-            эмодзи: str
     ):
-        for em in interaction.guild.emojis:
-            if em.name == эмодзи: await interaction.response.send_message(f'*<:{em.name}:{em.id}> — {em.id}*', ephemeral = True)
+        embed = discord.Embed(
+            title = "🏆 | Заявка",
+            description = f">>> *Для того, чтобы попасть в нашу дружную команду необходимо обладать такими качествами:*\n— адекватность, \n— умение работать в команде, \n— знания русского языка, \n— наличие 2FA, \n— ну и самое главное - желание двигаться по карьерной лестнице !",
+            color = 0x9c3f3f
+        )
+        embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+        await interaction.response.send_message(embed=embed, view = RecruitView())
 
 
 
