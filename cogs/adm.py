@@ -272,13 +272,17 @@ class adm(commands.Cog):
     async def recruit(
             self, interaction: discord.Interaction,
     ):
-        embed = discord.Embed(
-            title = "🏆 | Заявка",
-            description = f">>> *Для того, чтобы попасть в нашу дружную команду необходимо обладать такими качествами:*\n— адекватность, \n— умение работать в команде, \n— знания русского языка, \n— наличие 2FA, \n— ну и самое главное - желание двигаться по карьерной лестнице !",
-            color = 0x9c3f3f
-        )
-        embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-        await interaction.response.send_message(embed=embed, view = RecruitView())
+        user = interaction.user
+        if user.guild_permissions.administrator:
+            embed = discord.Embed(
+                title = "🏆 | Заявка",
+                description = f">>> *Для того, чтобы попасть в нашу дружную команду необходимо обладать такими качествами:*\n— адекватность, \n— умение работать в команде, \n— знания русского языка, \n— наличие 2FA, \n— ну и самое главное - желание двигаться по карьерной лестнице !",
+                color = 0x9c3f3f
+            )
+            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+            await interaction.response.send_message(embed=embed, view = RecruitView())
+        else:
+            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь права администратора!*', ephemeral=True)
 
 
 
