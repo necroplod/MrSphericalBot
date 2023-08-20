@@ -58,6 +58,10 @@ class adm(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.channel.id == settings.channels.art and message.attachments:
+            await message.create_thread(name = "🛶 | Обсуждение")
 
     @app_commands.command(name = "art", description = "Сохраните арт в архив!")
     async def art(
