@@ -6,6 +6,7 @@ class CountrySelectAdd(discord.ui.Select):
     def __init__(self):
         options = [
             discord.SelectOption(label="Россиянин", emoji="🇷🇺", description="Россия"),
+            discord.SelectOption(label="Белорус", emoji="🇧🇾", description="Беларусь"),
             discord.SelectOption(label="Украинец", emoji="🇺🇦", description="Украина"),
             discord.SelectOption(label="Казахстанец", emoji="🇰🇿", description="Казахстан"),
             discord.SelectOption(label="СНГ", emoji="🏴", description="СНГ"),
@@ -15,6 +16,7 @@ class CountrySelectAdd(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         ru = interaction.guild.get_role(997425518460817470)
+        by = interaction.guild.get_role(1142936988723462144)
         ua = interaction.guild.get_role(997425520675397682)
         kz = interaction.guild.get_role(997425521736568842)
         eu = interaction.guild.get_role(1109087511592058960)
@@ -22,7 +24,7 @@ class CountrySelectAdd(discord.ui.Select):
         roles = interaction.user.roles
 
         def check(r):
-            listt = [ru, ua, kz, cis, eu]
+            listt = [ru, by, ua, kz, cis, eu]
             listt.remove(r)
             for rr in listt:
                 if rr in roles:
@@ -35,6 +37,7 @@ class CountrySelectAdd(discord.ui.Select):
 
 
         if self.values[0] == "Россиянин": give = ru
+        if self.values[0] == "Белорус": give = by
         if self.values[0] == "Украинец": give = ua
         if self.values[0] == "Казахстанец": give = kz
         if self.values[0] == "СНГ": give = cis
@@ -50,6 +53,7 @@ class CountrySelectRemove(discord.ui.Select):
     def __init__(self):
         options = [
             discord.SelectOption(label="Россиянин", emoji="🇷🇺", description="Россия"),
+            discord.SelectOption(label="Белорус", emoji="🇧🇾", description="Беларусь"),
             discord.SelectOption(label="Украинец", emoji="🇺🇦", description="Украина"),
             discord.SelectOption(label="Казахстанец", emoji="🇰🇿", description="Казахстан"),
             discord.SelectOption(label="СНГ", emoji="🏴", description="СНГ"),
@@ -59,6 +63,7 @@ class CountrySelectRemove(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         ru = interaction.guild.get_role(997425518460817470)
+        by = interaction.guild.get_role(1142936988723462144)
         ua = interaction.guild.get_role(997425520675397682)
         kz = interaction.guild.get_role(997425521736568842)
         eu = interaction.guild.get_role(1109087511592058960)
@@ -66,7 +71,7 @@ class CountrySelectRemove(discord.ui.Select):
         roles = interaction.user.roles
 
         def check():
-            listt = [ru, ua, kz, cis, eu]
+            listt = [ru, by, ua, kz, cis, eu]
             for rr in listt:
                 if rr in roles:
                     return True
@@ -78,6 +83,7 @@ class CountrySelectRemove(discord.ui.Select):
 
 
         if self.values[0] == "Россиянин": give = ru
+        if self.values[0] == "Белорус": give = by
         if self.values[0] == "Украинец": give = ua
         if self.values[0] == "Казахстанец": give = kz
         if self.values[0] == "СНГ": give = cis
@@ -287,7 +293,7 @@ class role(commands.Cog):
     async def role(self, ctx):
         country = discord.Embed(
             title = "・▬▬▬ Откуда вы? ▬▬▬・",
-            description = "<a:1041076662546219168:1041076662546219168> :flag_ru: — <@&997425518460817470>\n<a:1041076662546219168:1041076662546219168> :flag_ua: — <@&997425520675397682>\n<a:1041076662546219168:1041076662546219168> :flag_kz: — <@&997425521736568842>\n<a:1041076662546219168:1041076662546219168> :flag_black: — <@&1109087164219789314>\n<a:1041076662546219168:1041076662546219168> :flag_eu: — <@&1109087511592058960>",
+            description = "<a:1041076662546219168:1041076662546219168> :flag_ru: — <@&997425518460817470>\n<a:1041076662546219168:1041076662546219168> :flag_ua: — <@&997425520675397682>\n<a:1041076662546219168:1041076662546219168> :flag_by: — <@&1142936988723462144>\n<a:1041076662546219168:1041076662546219168> :flag_kz: — <@&997425521736568842>\n<a:1041076662546219168:1041076662546219168> :flag_black: — <@&1109087164219789314>\n<a:1041076662546219168:1041076662546219168> :flag_eu: — <@&1109087511592058960>",
             color = 0xdd8d03
         )
         access = discord.Embed(
