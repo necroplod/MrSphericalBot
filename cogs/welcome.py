@@ -29,7 +29,7 @@ class welcome(commands.Cog):
                             inviter = integration.user
                 embed = discord.Embed(
                     title='',
-                    description=f'''●─────────────────●\n{member.mention} — ***{member.name}***\n●─────────────────●\nБот был добавлен {inviter.mention}''',
+                    description=f'''●──────────────────────────────────●\n{member.mention} — ***{member.name}***\n●──────────────────────────────────●\nБот был добавлен {inviter.mention}''',
                     color = 0x2ecc71,
                     timestamp = datetime.datetime.now()
                 )
@@ -48,7 +48,7 @@ class welcome(commands.Cog):
 
                     embed = discord.Embed(
                         title='',
-                        description=f'''●─────────────────●\n{member.mention} — ***{member.name}***\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nЕго пригласил <@{inviter}>, который теперь пригласил **{uses}** участников*''',
+                        description=f'''●──────────────────────────────────●\n{member.mention} — ***{member.name}***\n●──────────────────────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nЕго пригласил <@{inviter}>, который теперь пригласил **{uses}** участников*''',
                         color = 0x2ecc71,
                         timestamp = datetime.datetime.now()
                     )
@@ -56,7 +56,7 @@ class welcome(commands.Cog):
                 except:
                     embed = discord.Embed(
                         title='',
-                        description=f'''●─────────────────●\n{member.mention} — ***{member.name}***\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nОн использовал персональную ссылку сервера.*''',
+                        description=f'''●──────────────────────────────────●\n{member.mention} — ***{member.name}***\n●──────────────────────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nОн использовал персональную ссылку сервера.*''',
                         color = 0x2ecc71,
                         timestamp = datetime.datetime.now()
                     )
@@ -73,7 +73,7 @@ class welcome(commands.Cog):
         welcome = self.client.get_channel(settings.channels.welcome)
         embed = discord.Embed(
             title='',
-            description=f'''●─────────────────●\n{member.mention} — ***{member.name}***\n●─────────────────●\n***Покинул нас.***''',
+            description=f'''●──────────────────────────────────●\n{member.mention} — ***{member.name}***\n●──────────────────────────────────●\n***Покинул нас.***''',
             color = 0x2ecc71,
             timestamp = datetime.datetime.now()
         )
