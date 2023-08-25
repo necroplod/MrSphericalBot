@@ -17,6 +17,7 @@ class welcome(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        r = member.guild.get_role(997425505349419099)
         if member.guild.id == settings.misc.guild:
             welcome = self.client.get_channel(settings.channels.welcome)
 
@@ -28,7 +29,7 @@ class welcome(commands.Cog):
                             inviter = integration.user
                 embed = discord.Embed(
                     title='',
-                    description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\nБот был добавлен {inviter.mention}''',
+                    description=f'''●─────────────────●\n{member.mention} — ***{member.name}***\n●─────────────────●\nБот был добавлен {inviter.mention}''',
                     color = 0x2ecc71,
                     timestamp = datetime.datetime.now()
                 )
@@ -47,17 +48,19 @@ class welcome(commands.Cog):
 
                     embed = discord.Embed(
                         title='',
-                        description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nЕго пригласил <@{inviter}>, который теперь пригласил **{uses}** участников*''',
+                        description=f'''●─────────────────●\n{member.mention} — ***{member.name}***\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nЕго пригласил <@{inviter}>, который теперь пригласил **{uses}** участников*''',
                         color = 0x2ecc71,
                         timestamp = datetime.datetime.now()
                     )
+                    await member.add_roles(r)
                 except:
                     embed = discord.Embed(
                         title='',
-                        description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nОн использовал персональную ссылку сервера.*''',
+                        description=f'''●─────────────────●\n{member.mention} — ***{member.name}***\n●─────────────────●\n*Пламенный привет тебе друг!\nЗаваривай кофеёк, и залетай в наилучший сервер на свете!\n\nОн использовал персональную ссылку сервера.*''',
                         color = 0x2ecc71,
                         timestamp = datetime.datetime.now()
                     )
+                    await member.add_roles(r)
 
             embed.set_image(url="https://i.ytimg.com/vi/nVzqh0fTARU/hqdefault.jpg")
             embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
@@ -70,7 +73,7 @@ class welcome(commands.Cog):
         welcome = self.client.get_channel(settings.channels.welcome)
         embed = discord.Embed(
             title='',
-            description=f'''●─────────────────●\n{member.mention}\n●─────────────────●\n***Покинул нас.***''',
+            description=f'''●─────────────────●\n{member.mention} — ***{member.name}***\n●─────────────────●\n***Покинул нас.***''',
             color = 0x2ecc71,
             timestamp = datetime.datetime.now()
         )
