@@ -188,7 +188,7 @@ class rp(commands.Cog):
             description = f"*{interaction.user.mention} танцует*",
             color = interaction.user.color
         )
-        url = random.choice(RP.flex)
+        url = random.choice(RP.dance)
         embed.set_image(url=url)
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await interaction.response.send_message(embed=embed)
