@@ -56,7 +56,10 @@ class RP:
             'https://c.tenor.com/1dtHuFICZF4AAAAS/kill-smack.gif',
             'https://c.tenor.com/CQorucEqd_cAAAAC/kill-me-baby.gif',
             'https://c.tenor.com/G4SGjQE8wCEAAAAS/mikey-tokyo.gif',
-            'https://c.tenor.com/Mn4W4D899WEAAAAS/ira-gamagoori-attack.gif'
+            'https://c.tenor.com/Mn4W4D899WEAAAAS/ira-gamagoori-attack.gif',
+            'https://media.tenor.com/Q-gxepiJHagAAAAC/nono.gif',
+            'https://media.tenor.com/-c9dZbAgHncAAAAd/%D0%B3%D0%BE%D1%80%D0%B4%D0%BE%D0%BD-gordon.gif',
+            'https://media.tenor.com/YvBHURG0Pf4AAAAC/jesus-jesus-loves-you.gif'
             ]
 
     shy = ['https://c.tenor.com/f0rqWrrLj84AAAAC/shy-awkward.gif',
@@ -91,7 +94,8 @@ class RP:
              'https://c.tenor.com/AEPrMnKqC5EAAAAd/cool-edit.gif',
              'https://c.tenor.com/mKTS5nbF1zcAAAAd/cute-anime-dancing.gif',
              'https://c.tenor.com/6Sz_9iSt7kAAAAAd/idoly-pride-anime-girl-dancing.gif',
-             'https://c.tenor.com/R6kJb2Ny9YIAAAAC/funny-anime-dancing.gif'
+             'https://c.tenor.com/R6kJb2Ny9YIAAAAC/funny-anime-dancing.gif',
+             'https://media.tenor.com/N02MNMYWDuQAAAAd/rats-dance.gif'
              ]
 
     hi = ['https://c.tenor.com/BxECPLeSf2UAAAAS/komi-cant-communicate-komi.gif',
