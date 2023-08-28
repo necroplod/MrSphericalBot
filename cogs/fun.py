@@ -12,32 +12,12 @@ class fun(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @app_commands.command(name = "catkdk", description = "Мяу сука")
-    async def catkdk(
-            self, interaction: discord.Interaction
-    ):
-        embed = discord.Embed(color=discord.Color.random())
-        url = random.choice(Fun.catkdk)
-        embed.set_image(url=url)
-        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
-        await interaction.response.send_message(embed=embed)
-
     @app_commands.command(name = "kdk", description = "Ням, ням пяченьки)")
     async def kdk(
             self, interaction: discord.Interaction
     ):
         embed = discord.Embed(color=discord.Color.random())
         url = random.choice(Fun.kdk)
-        embed.set_image(url=url)
-        embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
-        await interaction.response.send_message(embed=embed)
-
-    @app_commands.command(name = "kdkeat", description = "Куфаем пяченьки")
-    async def kdkeat(
-            self, interaction: discord.Interaction
-    ):
-        embed = discord.Embed(color=discord.Color.random())
-        url = Fun.kdkeat
         embed.set_image(url=url)
         embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
         await interaction.response.send_message(embed=embed)
