@@ -192,6 +192,7 @@ class NotifySelectAdd(discord.ui.Select):
             discord.SelectOption(label="Новости", emoji="📰", description="Новости сервера"),
             discord.SelectOption(label="Опросы", emoji="📊", description="Опросы и голосования"),
             discord.SelectOption(label="Оживляй чат, лол", emoji="🐒", description="Особенная роль"),
+            discord.SelectOption(label="Ивенты", emoji="🎈", description="Ивенты")
         ]
         super().__init__(placeholder="Добавить роль", max_values=1, min_values=0, options=options, custom_id = 'role:notifyadd')
 
@@ -200,6 +201,7 @@ class NotifySelectAdd(discord.ui.Select):
         news = interaction.guild.get_role(997425506960015410)
         poll = interaction.guild.get_role(997425510265135145)
         deadchat = interaction.guild.get_role(997425504485384253)
+        event = interaction.guild.get_role(1146028746680311839)
         roles = interaction.user.roles
 
         def check(rr):
@@ -216,6 +218,7 @@ class NotifySelectAdd(discord.ui.Select):
         if self.values[0] == "Новости": give = news
         if self.values[0] == "Опросы": give = poll
         if self.values[0] == "Оживляй чат, лол": give = deadchat
+        if self.values[0] == "Ивенты": give = event
 
 
         if await process(give) and check(give) is False:
@@ -230,6 +233,7 @@ class NotifySelectRemove(discord.ui.Select):
             discord.SelectOption(label="Новости", emoji="📰", description="Новости сервера"),
             discord.SelectOption(label="Опросы", emoji="📊", description="Опросы и голосования"),
             discord.SelectOption(label="Оживляй чат, лол", emoji="🐒", description="Особенная роль"),
+            discord.SelectOption(label="Ивенты", emoji="🎈", description="Ивенты")
         ]
         super().__init__(placeholder="Убрать роль", max_values=1, min_values=0, options=options, custom_id = 'role:notifyremove')
 
@@ -238,6 +242,7 @@ class NotifySelectRemove(discord.ui.Select):
         news = interaction.guild.get_role(997425506960015410)
         poll = interaction.guild.get_role(997425510265135145)
         deadchat = interaction.guild.get_role(997425504485384253)
+        event = interaction.guild.get_role(1146028746680311839)
         roles = interaction.user.roles
 
         def check(rr):
@@ -254,6 +259,7 @@ class NotifySelectRemove(discord.ui.Select):
         if self.values[0] == "Новости": give = news
         if self.values[0] == "Опросы": give = poll
         if self.values[0] == "Оживляй чат, лол": give = deadchat
+        if self.values[0] == "Ивенты": give = event
 
         if check(give) and await process(give):
             await interaction.response.send_message(f'*Роль <@&{give.id}> успешно убрана!*', ephemeral = True)
@@ -303,7 +309,7 @@ class role(commands.Cog):
         )
         notify = discord.Embed(
             title = "・▬▬▬ Уведомления ▬▬▬・",
-            description = '<a:1041076662546219168:1041076662546219168> :bell: — <@&997425507836645506> — Уведомление о новых видео\n<a:1041076662546219168:1041076662546219168> :newspaper: — <@&997425506960015410> — Новости сервера\n<a:1041076662546219168:1041076662546219168> :bar_chart: — <@&997425510265135145> — Опросы и голосования\n<a:1041076662546219168:1041076662546219168> :monkey: — <@&997425504485384253> —  Особенная роль. Единственная из автовыдаваемых ролей, изменяющая цвет. Вы берете эту роль на свой страх и риск!',
+            description = '<a:1041076662546219168:1041076662546219168> :bell: — <@&997425507836645506> — Уведомление о новых видео\n<a:1041076662546219168:1041076662546219168> :newspaper: — <@&997425506960015410> — Новости сервера\n<a:1041076662546219168:1041076662546219168> :bar_chart: — <@&997425510265135145> — Опросы и голосования\n<a:1041076662546219168:1041076662546219168> :monkey: — <@&997425504485384253> —  Особенная роль. Единственная из автовыдаваемых ролей, изменяющая цвет. Вы берете эту роль на свой страх и риск!\n<a:1041076662546219168:1041076662546219168> :balloon: — <@&1146028746680311839> — Уведомления о новых ивентах.',
             color = 0xdd8d03
         )
         gender = discord.Embed(
