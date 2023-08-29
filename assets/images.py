@@ -33,7 +33,7 @@ class RP:
         'https://cdn.discordapp.com/attachments/780929735403634718/882678227879985223/20-27-50-6596769d62ae6042461b761da685e24b499b8cb7_hq.gif'
         ]
 
-    eat = ['https://cdn.discordapp.com/attachments/1102887416626425886/1145759486179557406/18ae02737c3d8209.gif'
+    eat = ['https://cdn.discordapp.com/attachments/1102887416626425886/1145769978935640186/-min.gif'
            'https://media.giphy.com/media/HxE2bm0SZWqhW/giphy.gif',
            'https://media.giphy.com/media/PxdjO4EBNuLrW/giphy.gif',
            'https://media.giphy.com/media/JV5f0T00r89Rm/giphy.gif',
