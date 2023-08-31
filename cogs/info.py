@@ -68,18 +68,6 @@ class info(commands.Cog):
         await interaction.response.send_message(embed=answer)
         await mod.send(f'<@&1102489864240373811>', embed=embed)
 
-    """
-    @commands.command()
-    @commands.has_any_role(1071141626866569286)
-    async def verify(self, ctx):
-        embed = discord.Embed(
-            title = "🎇 | Верификация",
-            description = f"<a:768563657390030971:1041076662546219168> Всё, что вы увидели в чатах, которые станут вам доступны, должно остаться там. Никакого распространения скринов из этого чата или любой другой информации.",
-            color = 0x7b7385
-        )
-        embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
-        await ctx.send(embed=embed, view = VerifyView())"""
-
 
 
 async def setup(client):
