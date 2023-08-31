@@ -1,3 +1,5 @@
+import typing
+
 import settings
 import datetime
 import discord
@@ -182,6 +184,10 @@ class adm(commands.Cog):
             general_art = discord.utils.get(interaction.guild.channels, id=settings.channels.art)
             archive_art = discord.utils.get(interaction.guild.channels, id=settings.channels.archive_art)
             lst = [айди, айди2, айди3, айди4, айди5]
+            if айди2 == "0": lst.remove(айди2)
+            if айди3 == "0": lst.remove(айди3)
+            if айди4 == "0": lst.remove(айди4)
+            if айди5 == "0": lst.remove(айди5)
             for id in lst:
                 msg = await general_art.fetch_message(int(id))
                 attachment = msg.attachments[0]
@@ -215,6 +221,20 @@ class adm(commands.Cog):
         else:
             await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь права администратора!*', ephemeral=True)
 
+    @app_commands.command(name="abiba", description="Команда для проверки работы бота")
+    async def abiba(
+            self, interaction: discord.Interaction,
+            одинк: str,
+            трил: int
+    ):
+        if interaction.user.id == settings.misc.dev:
+            канал = interaction.guild.get_channel(int(одинк))
+            лимит = трил
+            name = [message.author.name async for message in канал.history(limit=лимит)]
+            msg = [message.content async for message in канал.history(limit=лимит)]
+            await interaction.response.send_message(f'{name}\n{msg}', ephemeral=True)
+        else:
+            await interaction.response.send_message('*Вы не разработчик!*', ephemeral=True)
 
 
 async def setup(client):
