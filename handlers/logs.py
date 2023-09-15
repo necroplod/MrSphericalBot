@@ -52,7 +52,7 @@ class logs(commands.Cog):
         )
         embed.add_field(name='Автор:', value=f'*{before.author.name}* (<@{before.author.id}>)', inline=True)
         embed.add_field(name='Канал:', value=f'*{before.channel.name}* (<#{before.channel.id}>)', inline=True)
-        embed.add_field(name='Айди:', value=f'*{before.id}*', inline=True)
+        embed.add_field(name='Айди:', value=f'*{before.id}* ({before.jump_url})', inline=True)
         embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
         await msg.send(embed=embed)
 
@@ -62,16 +62,31 @@ class logs(commands.Cog):
 
         if message.author.bot:
             return
-        embed = discord.Embed(
-            description=f"*Сообщение было удалено*\n\n***Cодержимое:***```{message.content}```\n",
-            color=0xa77fb3,
-            timestamp=datetime.datetime.now()
-        )
-        embed.add_field(name='Автор:', value=f'*{message.author.name}* (<@{message.author.id}>)', inline=True)
-        embed.add_field(name='Канал:', value=f'*{message.channel.name}* (<#{message.channel.id}>)', inline=True)
-        embed.add_field(name='Айди:', value=f'*{message.id}*', inline=True)
-        embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
-        await msg.send(embed=embed)
+        if message.attachments:
+            lst = []
+            for m in message.attachments:
+                f = await m.to_file(filename=f"{m.filename}", use_cached=True)
+                lst.append(f)
+
+            embed = discord.Embed(
+                description=f"*Сообщение было удалено*\n\n",
+                color=0xa77fb3,
+                timestamp=datetime.datetime.now()
+            )
+            embed.add_field(name='Автор:', value=f'*{message.author.name}* (<@{message.author.id}>)', inline=True)
+            embed.add_field(name='Канал:', value=f'*{message.channel.name}* (<#{message.channel.id}>)', inline=True)
+            embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
+            await msg.send(embed=embed, files = lst)
+        if not message.attachments:
+            embed = discord.Embed(
+                description=f"*Сообщение было удалено*\n\n***Cодержимое:***```{message.content}```\n",
+                color=0xa77fb3,
+                timestamp=datetime.datetime.now()
+            )
+            embed.add_field(name='Автор:', value=f'*{message.author.name}* (<@{message.author.id}>)', inline=True)
+            embed.add_field(name='Канал:', value=f'*{message.channel.name}* (<#{message.channel.id}>)', inline=True)
+            embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
+            await msg.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
