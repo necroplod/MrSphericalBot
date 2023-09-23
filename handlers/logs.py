@@ -17,7 +17,7 @@ class logs(commands.Cog):
         print(f'----------------------------------------------------')
         print(f"| Logged on as MrSphericalBot - {self.client.user.id} |")
         print(f"| Canary: {config.CANARY}                                    |")
-        print(f"| Discord.py Version: {discord.__version__}                        |")
+        print(f"| Discord.py Version: {discord.__version__}                       |")
         print(f'----------------------------------------------------')
         print(" ")
         logs = self.client.get_channel(1102889033593536542)
@@ -92,7 +92,7 @@ class logs(commands.Cog):
     async def on_member_update(self, before, after):
         role = self.client.get_channel(settings.logs.role)
         bef = [r.mention for r in before.roles]
-        aft = [r.mention for r in  after.roles]
+        aft = [r.mention for r in after.roles]
         if before.roles != after.roles:
             embed = discord.Embed(
                 description=f"*Роли участника были изменены*\n",
