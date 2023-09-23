@@ -86,7 +86,10 @@ class adm(commands.Cog):
                 color=msg.author.color
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-            embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=msg.author.avatar.url)
+            if msg.author.avatar.url is None:
+                embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=settings.misc.avatar_url)
+            else:
+                embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=msg.author.avatar.url)
             embed.set_image(url=f"{attachment.url}")
             await archive_art.send(embed=embed)
 
@@ -114,7 +117,10 @@ class adm(commands.Cog):
                 color=msg.author.color
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-            embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=msg.author.avatar.url)
+            if msg.author.avatar.url is None:
+                embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=settings.misc.avatar_url)
+            else:
+                embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=msg.author.avatar.url)
             embed.set_image(url=f"{attachment.url}")
             await archive_art.send(embed=embed)
             await interaction.response.send_message('*Готово!*', ephemeral=True)
@@ -221,7 +227,8 @@ class adm(commands.Cog):
                     color=msg.author.color
                 )
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-                embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=msg.author.avatar.url)
+                if msg.author.avatar.url is None: embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=settings.misc.avatar_url)
+                else: embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=msg.author.avatar.url)
                 embed.set_image(url=f"{attachment.url}")
                 await archive_art.send(embed=embed)
             await interaction.response.send_message('*Готово!*', ephemeral=True)
