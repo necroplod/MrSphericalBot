@@ -67,6 +67,28 @@ class adm(commands.Cog):
                 pass
             else:
                 await message.create_thread(name = "🛶 | Обсуждение")
+                await message.add_reaction("🤍")
+
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction, user):
+        general_art = reaction.message.guild.get_channel(settings.channels.art)
+        archive_art = reaction.message.guild.get_channel(settings.channels.archive_art)
+        role = reaction.message.guild.get_role(1071139216580419644)
+
+        if reaction.emoji == "🤍" and role in user.roles:
+            msg = await general_art.fetch_message(int(reaction.message.id))
+            attachment = msg.attachments[0]
+
+            embed = discord.Embed(
+                title="",
+                description=f"{msg.jump_url}",
+                timestamp=msg.created_at,
+                color=msg.author.color
+            )
+            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+            embed.set_author(name=f"Арт от {msg.author.display_name}", icon_url=msg.author.avatar.url)
+            embed.set_image(url=f"{attachment.url}")
+            await archive_art.send(embed=embed)
 
     @app_commands.command(name = "art", description = "Сохраните арт в архив!")
     async def art(
@@ -87,7 +109,7 @@ class adm(commands.Cog):
 
             embed = discord.Embed(
                 title="",
-                description="",
+                description=f"{msg.jump_url}",
                 timestamp=msg.created_at,
                 color=msg.author.color
             )
@@ -194,7 +216,7 @@ class adm(commands.Cog):
 
                 embed = discord.Embed(
                     title="",
-                    description="",
+                    description=f"{msg.jump_url}",
                     timestamp=msg.created_at,
                     color=msg.author.color
                 )
@@ -220,21 +242,6 @@ class adm(commands.Cog):
             await interaction.response.send_message(embed=embed, view = RecruitView())
         else:
             await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь права администратора!*', ephemeral=True)
-
-    @app_commands.command(name="abiba", description="Команда для проверки работы бота")
-    async def abiba(
-            self, interaction: discord.Interaction,
-            одинк: str,
-            трил: int
-    ):
-        if interaction.user.id == settings.misc.dev:
-            канал = interaction.guild.get_channel(int(одинк))
-            лимит = трил
-            name = [message.author.name async for message in канал.history(limit=лимит)]
-            msg = [message.content async for message in канал.history(limit=лимит)]
-            await interaction.response.send_message(f'{name}\n{msg}', ephemeral=True)
-        else:
-            await interaction.response.send_message('*Вы не разработчик!*', ephemeral=True)
 
 
 async def setup(client):
