@@ -134,7 +134,7 @@ class adm(commands.Cog):
             вариант2: str,
             вариант3: str,
             вариант4: str,
-            вариант5: str
+            роль: Union[discord.Role]
 
     ):
         role = interaction.guild.get_role(1071139871105744977)
@@ -147,25 +147,24 @@ class adm(commands.Cog):
             two = f":two: {вариант2}"
             three = f":three: {вариант3}"
             four = f":four: {вариант4}"
-            five = f":five: {вариант5}"
+            role = роль.id
 
 
             embed = discord.Embed(
                 title='🎁 | Опрос',
-                description=f"""**{тема}**\n{one}\n{two}\n{three}\n{four}\n{five}
+                description=f"""**{тема}**\n{one}\n{two}\n{three}\n{four}
             """,
                 color=0x007f5c
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
             embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar)
 
-            msg = await канал.send(f'<@&{settings.roles.poll_role}>', embed=embed)
+            msg = await канал.send(f'<@&{role}>', embed=embed)
 
             await msg.add_reaction('1️⃣')
             await msg.add_reaction('2️⃣')
             await msg.add_reaction('3️⃣')
             await msg.add_reaction('4️⃣')
-            await msg.add_reaction('5️⃣')
 
 
     @app_commands.command(name = "proof", description = "Отправьте доказательства")
@@ -249,6 +248,40 @@ class adm(commands.Cog):
             await interaction.response.send_message(embed=embed, view = RecruitView())
         else:
             await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь права администратора!*', ephemeral=True)
+
+    @app_commands.command(name = "evmanage", description = "Управляйте чатом иветов")
+    async def eventmanage(
+            self, interaction: discord.Interaction,
+            действие: Literal['открыть', 'закрыть']
+        ):
+        role = interaction.guild.get_role(1142038601220235314)
+        ch = interaction.guild.get_channel(1142025152398376980)
+        rolemembers = interaction.guild.get_role(1146028746680311839)
+
+        if role not in interaction.user.roles:
+            await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1142038601220235314>*', ephemeral = True)
+            return
+        elif role in interaction.user.roles:
+            if действие == 'закрыть':
+                embed = discord.Embed(
+                    title = "🎀 | Ивенты",
+                    description = f"***Чат был открыт ивентором <@{interaction.user.id}>***\n\n***До скорых встреч!***",
+                    color = 0xd09248
+                )
+                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                await ch.set_permissions(rolemembers, read_messages = True, send_messages = False)
+            if действие == 'открыть':
+                embed = discord.Embed(
+                    title = "🎀 | Ивенты",
+                    description = f"***Чат был открыт ивентором <@{interaction.user.id}>***",
+                    color = 0xd09248
+                )
+                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                await ch.set_permissions(rolemembers, read_messages = True, send_messages = True)
+
+            await ch.send(embed=embed)
+            await interaction.response.send_message('*Готово!*', ephemeral = True)
+
 
 
 async def setup(client):
