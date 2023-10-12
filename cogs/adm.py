@@ -273,7 +273,7 @@ class adm(commands.Cog):
             if действие == 'открыть':
                 embed = discord.Embed(
                     title = "🎀 | Ивенты",
-                    description = f"***Чат был открыт ивентором <@{interaction.user.id}>***",
+                    description = f"***Чат был закрыт ивентором <@{interaction.user.id}>***",
                     color = 0xd09248
                 )
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
