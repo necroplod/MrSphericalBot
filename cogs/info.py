@@ -3,6 +3,7 @@ import typing
 import settings
 from discord.ext import commands
 from discord import app_commands
+from assets.images import Fun
 from typing import Union, Literal, Optional
 
 prefix = '/'
@@ -67,6 +68,16 @@ class info(commands.Cog):
         answer.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         await interaction.response.send_message(embed=answer)
         await mod.send(f'<@&1102489864240373811>', embed=embed)
+
+    @app_commands.command(name="kdk", description="Ням, ням пяченьки)")
+    async def kdk(
+            self, interaction: discord.Interaction
+    ):
+            embed = discord.Embed(color=discord.Color.random())
+            url = random.choice(Fun.kdk)
+            embed.set_image(url=url)
+            embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
+            await interaction.response.send_message(embed=embed)
 
 
 
