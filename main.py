@@ -34,7 +34,6 @@ class Setup(commands.Bot):
 		self.add_view(cogs.role.AccessView())
 		self.add_view(cogs.role.GenderView())
 		self.add_view(cogs.role.NotifyView())
-		self.add_view(cogs.info.VerifyView())
 		self.add_view(cogs.adm.RecruitView())
 		for extension in settings.extensions.cogs:
 			try:

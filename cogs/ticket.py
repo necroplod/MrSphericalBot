@@ -2,7 +2,15 @@ import discord
 import re
 import settings
 import datetime
+import typing
+from discord import app_commands
+from config.config import mongoconf
 from discord.ext import commands
+from pymongo import MongoClient
+
+cluster = MongoClient(f"{mongoconf.uri}")
+db = cluster.db
+collect = db.ticket
 
 class TicketPanel(discord.ui.View):
     def __init__(self):
@@ -129,16 +137,16 @@ class TicketClose(discord.ui.View):
         user = interaction.user
         topic = interaction.channel.topic
 
-        idd = re.search(r'\<@(.*)\>', topic, re.DOTALL).group(1)
-        tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
-        flatten = [msg async for msg in tickets_count.history(limit=100)]
-        msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
-        countt = msg.content
+        cntt = re.search(r'ticket-(.*)', ch.name, re.DOTALL).group(1)
+        chhh = collect.find_one({'_id': int(cntt)})
+        idd = chhh['author']
+
+
 
         if role in user.roles:
             embed = discord.Embed(
                 title = "🥊 | Тикеты",
-                description = f"***Тикет был передан!***\n<a:768563657390030971:1041076662546219168> Автор: <@{idd}>\n<a:768563657390030971:1041076662546219168> Номер: {countt}\n<a:768563657390030971:1041076662546219168> Модератор: <@{interaction.user.id}>",
+                description = f"***Тикет был передан!***\n<a:768563657390030971:1041076662546219168> Автор: <@{idd}>\n<a:768563657390030971:1041076662546219168> Номер: {cntt}\n<a:768563657390030971:1041076662546219168> Модератор: <@{interaction.user.id}>",
                 color = 0x370acd
             )
             await ch.set_permissions(
@@ -162,26 +170,23 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
         guild = interaction.guild
         notify = interaction.guild.get_channel(settings.channels.appeal_notify)
         tickets = discord.utils.get(guild.channels, name=settings.channels.tickets)
-        tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
-        flatten = [msg async for msg in tickets_count.history(limit=100)]
-        msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
-        count = msg.content
-        count = count[1:]
-        count = int(f"1{count}")
-        count = count + 1
-        count = str(count)
-        count = count[1:]
-        count = str(f"0{count}")
+
+        cnt = collect.find_one({'_id': 0})
+        cnt = int(cnt['count']) + 1
 
         await interaction.response.send_message('*Создание тикета.. Ожидайте.*', ephemeral=True)
         senior = guild.get_role(settings.roles.senior_mod)
 
         ch = await guild.create_text_channel(
-            name=f'ticket-{count}',
+            name=f'ticket-{cnt}',
             category=tickets,
-            topic=f"**Автор:** <@{interaction.user.id}>\n**Номер тикета:** {count}\n**Тема:** Апелляция",
+            topic=f"**Автор:** <@{interaction.user.id}>\n**Номер тикета:** 0{cnt}\n**Тема:** Апелляция",
             reason=f"Открытие тикета | {interaction.user.name}#{interaction.user.discriminator}"
         )
+
+        collect.insert_one({'_id': cnt, 'author': f"{interaction.user.id}", 'topic': f"Апелляция", 'status': 'open', 'channel': f"{ch.id}", 'time': datetime.datetime.now()})
+        collect.update_one({'_id': 0}, {'$set': {'count': cnt}})
+
         await ch.set_permissions(
             guild.default_role,
             view_channel=False,
@@ -199,7 +204,6 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
             read_message_history=True,
             read_messages=True
         )
-        await msg.edit(content=str(count))
         embed = discord.Embed(
             title="🥊 | Тикеты",
             description=f"*Поддержка скоро свяжется с вами.\nДля закрытия нажмите кнопку ниже.*\n*Информация для поддержки:*\n```Тема: Апелляция\n1. {self.mod.value}\n2. {self.time.value}\n3. {self.reason.value}\n4. {self.why.value}```",
@@ -208,12 +212,9 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=TicketClose())
 
-        db = interaction.guild.get_channel(settings.misc.ticketdb)
-        await db.send(f'|{count}| [{interaction.user.id}] -{ch.id}-')
-
         embed = discord.Embed(
             title="🥊 | Тикеты",
-            description=f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: Апелляции\n<a:768563657390030971:1041076662546219168> Номер: {count}",
+            description=f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: Апелляции\n<a:768563657390030971:1041076662546219168> Номер: {cnt}",
             color=0x370acd
         )
         await notify.send(f'<@&1071505429462519938>', embed=embed, view=TicketWait())
@@ -224,22 +225,18 @@ class TicketWait(discord.ui.View):
 
     @discord.ui.button(emoji='🎲', style=discord.ButtonStyle.green, label='Принять', custom_id="ticket:waitmod")
     async def agree(self, interaction: discord.Interaction, button: discord.ui.Button):
-        abc = interaction.guild.get_channel(settings.misc.ticketdb)
-        msg = abc.last_message.content
+        cnt = collect.find_one({'_id': 0})['count']
+        chhh = collect.find_one({'_id': cnt})
+        ch = interaction.guild.get_channel(int(chhh['channel']))
 
-        count = re.search(r'\|(.*)\|', msg, re.DOTALL).group(1)
-        ch = re.search(r'\-(.*)\-', msg, re.DOTALL).group(1)
-        ch_ = interaction.guild.get_channel(int(ch))
-
-
-        await ch_.send(f'*Модератор <@{interaction.user.id}> взялся за тикет и скоро здесь будет, ожидайте.*')
-        await ch_.set_permissions(
+        await ch.send(f'*Модератор <@{interaction.user.id}> взялся за тикет и скоро здесь будет, ожидайте.*')
+        await ch.set_permissions(
             interaction.user,
             send_messages=True,
             read_message_history=True,
             read_messages=True
         )
-        await interaction.response.edit_message(content = f'*Модератор <@{interaction.user.id}> принял тикет №{count}.*', embed=None, view=None)
+        await interaction.response.edit_message(content = f'*Модератор <@{interaction.user.id}> принял тикет №{cnt}.*', embed=None, view=None)
 
 class Select(discord.ui.Select):
     def __init__(self):
@@ -265,29 +262,22 @@ class Select(discord.ui.Select):
 
                 guild = interaction.guild
                 tickets = discord.utils.get(guild.channels, name=settings.channels.tickets)
-                tickets_count = interaction.guild.get_channel(settings.channels.tickets_count)
                 mods = guild.get_role(settings.roles.mods_tickets)
                 notify = interaction.guild.get_channel(settings.channels.ticket_notify)
                 tech = interaction.guild.get_channel(settings.channels.tech_ticket)
 
-                flatten = [msg async for msg in tickets_count.history(limit=100)]
-                msg = discord.utils.get(flatten, id=settings.misc.tickets_count)
-                global count
-                count = msg.content
-                count = count[1:]
-                count = int(f"1{count}")
-                count = count + 1
-                count = str(count)
-                count = count[1:]
-                count = str(f"0{count}")
+                cnt = collect.find_one({'_id': 0})
+                cnt = int(cnt['count']) + 1
 
                 await interaction.response.send_message('*Создание тикета.. Ожидайте.*', ephemeral=True)
                 ch = await guild.create_text_channel(
-                    name=f'ticket-{count}',
+                    name=f'ticket-{cnt}',
                     category=tickets,
-                    topic=f"**Автор:** <@{interaction.user.id}>\n**Номер тикета:** {count}\n**Тема:** {topic}",
-                    reason=f"Открытие тикета | {interaction.user.name}#{interaction.user.discriminator}"
+                    topic=f"**Автор:** <@{interaction.user.id}>\n**Номер тикета:** {cnt}\n**Тема:** {topic}",
+                    reason=f"Открытие тикета | {interaction.user.name}"
                 )
+                collect.insert_one({'_id': cnt, 'author': f"{interaction.user.id}", 'topic': f"{topic}", 'status': 'open', 'channel': f"{ch.id}", 'time': datetime.datetime.now()})
+                collect.update_one({'_id': 0}, {'$set': {'count': cnt}})
                 await ch.set_permissions(
                     guild.default_role,
                     view_channel=False,
@@ -299,7 +289,6 @@ class Select(discord.ui.Select):
                     read_message_history=True,
                     read_messages=True
                 )
-                await msg.edit(content=str(count))
                 embed = discord.Embed(
                     title="🥊 | Тикеты",
                     description=f"*Поддержка скоро свяжется с вами.\nДля закрытия нажмите кнопку ниже.*\n*Информация для поддержки:*\n```Тема: {topic}```",
@@ -309,13 +298,9 @@ class Select(discord.ui.Select):
                 await ch.send(f'Добро пожаловать, <@{interaction.user.id}>', embed=embed, view=TicketClose())
                 embed = discord.Embed(
                     title = "🥊 | Тикеты",
-                    description = f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: {topic}\n<a:768563657390030971:1041076662546219168> Номер: {count}",
+                    description = f"***Поступил новый тикет!***\n<a:768563657390030971:1041076662546219168> Автор: <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168> Тема: {topic}\n<a:768563657390030971:1041076662546219168> Номер: {cnt}",
                     color = 0x370acd
                 )
-
-                db = interaction.guild.get_channel(settings.misc.ticketdb)
-                await db.send(f'|{count}| [{interaction.user.id}] -{ch.id}-')
-
                 if self.values[0] == "Технический тикет":
                     await tech.send('<@&1071505429462519938>', embed=embed, view = TicketWait())
                 else:
@@ -351,6 +336,7 @@ class ticket(commands.Cog):
         )
         embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
         await ctx.send(embed=embed, view = PersistentView())
+
 
 async def setup(client):
     await client.add_cog(ticket(client))
