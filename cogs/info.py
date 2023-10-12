@@ -8,19 +8,6 @@ from typing import Union, Literal, Optional
 
 prefix = '/'
 
-class VerifyView(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-    @discord.ui.button(emoji='🎳', style=discord.ButtonStyle.green, label = 'Верификация', custom_id = "verify:verify")
-    async def verify(self, interaction: discord.Interaction, button: discord.ui.Button):
-        role = interaction.guild.get_role(settings.roles.toxic)
-        if role not in interaction.user.roles:
-            await interaction.user.add_roles(role)
-            await interaction.response.send_message(f'*Роль <@&{role.id}> успешно выдана!*', ephemeral = True)
-        else:
-            await interaction.user.remove_roles(role)
-            await interaction.response.send_message(f'*Роль <@&{role.id}> успешно убрана!*', ephemeral=True)
-
 class info(commands.Cog):
 
     def __init__(self, client):
@@ -38,7 +25,6 @@ class info(commands.Cog):
       )
 
       embed.add_field(name = '<:pakistan:1046443315177984130>  Информация', value = f'`{prefix}help` `{prefix}alarm`', inline=False)
-      #embed.add_field(name = '<:moon:1051616411971231804>  Веселье', value = f'`{prefix}catkdk` `{prefix}kdk` `{prefix}kdkeat`', inline=False)
       embed.add_field(name = '<:nasa:1063562901958438922>    RP-Команды', value = f'`{prefix}kiss` `{prefix}hug` `{prefix}pat` `{prefix}slap` `{prefix}feed` `{prefix}cry` `{prefix}tickle` `{prefix}bite` `{prefix}sleep` `{prefix}eat` `{prefix}angry` `{prefix}kill` `{prefix}shy` `{prefix}shake` `{prefix}lick` `{prefix}relax` `{prefix}flex` `{prefix}hi` `{prefix}bye`', inline=False)
       embed.add_field(name = '<:king:1005355877278154814>  Админские Штучки', value = f'`{prefix}art` `{prefix}artmany` `{prefix}poll` `s.role` `s.ticket` `{prefix}proof` `{prefix}recruit`', inline=False)
       embed.set_footer(icon_url = self.client.user.avatar.url, text = f'{self.client.user.name} | Все права защищены')
