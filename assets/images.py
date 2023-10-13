@@ -48,7 +48,8 @@ class RP:
             'https://c.tenor.com/Mn4W4D899WEAAAAS/ira-gamagoori-attack.gif',
             'https://media.tenor.com/Q-gxepiJHagAAAAC/nono.gif',
             'https://media.tenor.com/-c9dZbAgHncAAAAd/%D0%B3%D0%BE%D1%80%D0%B4%D0%BE%D0%BD-gordon.gif',
-            'https://media.tenor.com/YvBHURG0Pf4AAAAC/jesus-jesus-loves-you.gif'
+            'https://media.tenor.com/YvBHURG0Pf4AAAAC/jesus-jesus-loves-you.gif',
+            'https://static.wikia.nocookie.net/undertale/images/c/c2/Flowey_screenshot_death_Genocide.gif'
             ]
 
     shy = ['https://c.tenor.com/f0rqWrrLj84AAAAC/shy-awkward.gif',
