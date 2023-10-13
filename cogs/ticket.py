@@ -32,6 +32,7 @@ class TicketPanel(discord.ui.View):
             color=0x370acd
         )
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+        collect.update_one({'channel': f"{ch.id}"}, {'$set': {'status': 'opened'}})
         await interaction.response.send_message(embed=embed)
 
     @discord.ui.button(emoji='⛔', style=discord.ButtonStyle.red, label='Удалить', custom_id = "panel:close")
@@ -71,6 +72,7 @@ class TicketPanel(discord.ui.View):
             else:
                 await logsch.send(embeds=[logs, msg])
             await interaction.response.send_message('*Удаление тикета...*')
+            collect.update_one({'channel': f"{ch.id}"}, {'$set': {'status': 'deleted'}})
             await ch.delete()
         else:
             await interaction.response.send_message(f'**У Вас отсутствует роль <@&{settings.roles.manage_tickets}>!**', ephemeral=True)
@@ -85,7 +87,8 @@ class TicketClose(discord.ui.View):
         ch = interaction.channel
 
         mods = interaction.guild.get_role(settings.roles.mods_tickets)
-        idd = re.search(r'\<@(.*)\>', topic, re.DOTALL).group(1)
+        entry = collect.find_one({'channel': f"{ch.id}"})
+        idd = entry['author']
 
 
         name = ch.name.replace("ticket", "closed")
@@ -124,9 +127,7 @@ class TicketClose(discord.ui.View):
         logs.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
         logsch = discord.utils.get(interaction.guild.channels, id = settings.logs.ticket)
         await logsch.send(embed=logs)
-
-
-
+        collect.update_one({'channel': f"{ch.id}"}, {'$set': {'status': 'closed'}})
         await interaction.response.send_message(embeds=[embed, manage], view = TicketPanel())
 
     @discord.ui.button(emoji='🔒', style=discord.ButtonStyle.red, label='Передать тикет', custom_id = "close:transfer")
@@ -140,8 +141,6 @@ class TicketClose(discord.ui.View):
         cntt = re.search(r'ticket-(.*)', ch.name, re.DOTALL).group(1)
         chhh = collect.find_one({'_id': int(cntt)})
         idd = chhh['author']
-
-
 
         if role in user.roles:
             embed = discord.Embed(
@@ -184,7 +183,7 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
             reason=f"Открытие тикета | {interaction.user.name}#{interaction.user.discriminator}"
         )
 
-        collect.insert_one({'_id': cnt, 'author': f"{interaction.user.id}", 'topic': f"Апелляция", 'status': 'open', 'channel': f"{ch.id}", 'time': datetime.datetime.now()})
+        collect.insert_one({'_id': cnt, 'author': f"{interaction.user.id}", 'topic': f"Апелляция", 'status': 'opened', 'channel': f"{ch.id}", 'time': datetime.datetime.now()})
         collect.update_one({'_id': 0}, {'$set': {'count': cnt}})
 
         await ch.set_permissions(
@@ -276,7 +275,7 @@ class Select(discord.ui.Select):
                     topic=f"**Автор:** <@{interaction.user.id}>\n**Номер тикета:** {cnt}\n**Тема:** {topic}",
                     reason=f"Открытие тикета | {interaction.user.name}"
                 )
-                collect.insert_one({'_id': cnt, 'author': f"{interaction.user.id}", 'topic': f"{topic}", 'status': 'open', 'channel': f"{ch.id}", 'time': datetime.datetime.now()})
+                collect.insert_one({'_id': cnt, 'author': f"{interaction.user.id}", 'topic': f"{topic}", 'status': 'opened', 'channel': f"{ch.id}", 'time': datetime.datetime.now()})
                 collect.update_one({'_id': 0}, {'$set': {'count': cnt}})
                 await ch.set_permissions(
                     guild.default_role,
