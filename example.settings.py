@@ -19,7 +19,6 @@ class channels:
     tech_ticket = 0
     appeal_notify = 0
     recruit = 0
-    event_logs = 0
 class stats:
     all = 0
     members = 0
@@ -30,17 +29,18 @@ class stats:
     all_rp = 0
     members_rp = 0
 class roles:
-    manage_tickets = 1071141626866569286
-    mods_tickets = 1071505429462519938
-    poll_role = 997425510265135145
-    senior_mod = 1102550171948154900
-    mute = 1090003567793938442
+    manage_tickets = 0
+    mods_tickets = 0
+    poll_role = 0
+    senior_mod = 0
+    mute = 0
 class logs:
     msg = 0
     role = 0
     ticket = 0
     welcome = 0
     server = 0
+    event = 0
 class misc:
     ticketdb = 0
     guild = 0
