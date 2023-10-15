@@ -5,7 +5,8 @@ from pymongo import MongoClient
 from discord.ext import commands
 from discord import app_commands
 from config.config import mongoconf
-import time
+import settings
+import datetime
 
 cluster = MongoClient(f"{mongoconf.uri}")
 db = cluster.db
@@ -21,7 +22,7 @@ class events(commands.Cog):
             self, interaction: discord.Interaction,
             действие: typing.Literal['открыть', 'закрыть']
     ):
-        channel = self.client.get_channel(settings.channels.event_logs)
+        channel = self.client.get_channel(settings.logs.event)
         role = interaction.guild.get_role(1142038601220235314)
         ch = interaction.guild.get_channel(1142025152398376980)
         rolemembers = interaction.guild.get_role(1146028746680311839)
@@ -62,25 +63,25 @@ class events(commands.Cog):
                 )
                 embed.add_field(name="Дата действия", value=f"<t:{time.time()}>", inline=False)
                 embed.add_field(name="Айди ивентора", value=interaction.author.id, inline=False)
-                await channel.send()
+                await logs.send()
             await ch.send(embed=embed)
             await interaction.response.send_message('*Готово!*', ephemeral=True)
 
     @app_commands.command(name = "topmanage", description = "Управление топом победителей")
     async def topmanage(
             self, interaction: discord.Interaction,
-            действие: typing.Literal['добавить', 'убавить'],
+            действие: typing.Literal['добавить', 'убавить', 'очистить'],
             айди: typing.Optional[str],
             число: typing.Optional[int]
     ):
-        channel = self.client.get_channel(settings.channels.event_logs)
+        logs = self.client.get_channel(settings.logs.event)
         role = interaction.guild.get_role(1142038601220235314)
         fnd = {'_id': айди}
 
         if айди is None or число is None: await interaction.response.send_message(f'*Недостаточно аргументов команды!*', ephemeral=True)
         if role not in interaction.user.roles: await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1142038601220235314>*', ephemeral=True)
         elif role in interaction.user.roles:
-            if число < 1: await interaction.response.send_message(f'*Число **{число}** меньше единицы!*', ephemeral=True)
+            if число < 1 and действие != 'очистить': await interaction.response.send_message(f'*Число **{число}** меньше единицы!*', ephemeral=True)
 
             if действие == 'добавить':
                 if collect.count_documents(fnd) == 1:
@@ -88,16 +89,17 @@ class events(commands.Cog):
                     collect.update_one(fnd, {'$set': {'count': cnt + число}})
                 elif collect.count_documents(fnd) == 0:
                     collect.insert_one({'_id': айди, 'count': число})
-                await interaction.response.send_message(f'*Вы успешно добавили участнику <@{int(айди)}> **{число}** побед!*')
-                embed=discord.Embed(
-                    title="Изменение ивентов",
-                    description=f"Участник **{interaction.author}** добавил победы человеку <@{int(айди)}> на `{число}`!",
-                    color=0x774177
+
+                embed = discord.Embed(
+                    title="🎇 | Доска победителей",
+                    description=f">>> Увеличено число побед <@{айди}> на **{число}**!",
+                    color=0xfaa821
                 )
-                embed.add_field(name="Дата действия", value=f"<t:{time.time()}>", inline=False)
-                embed.add_field(name="Айди ивентора", value=interaction.author.id, inline=False)
-                embed.add_field(name="Айди участника", value=айди, inline=False)
-                await channel.send()
+                embed.add_field(name="Ивентор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
+                embed.add_field(name="Участник:", value=f"<@{айди}> ({айди})", inline=True)
+                embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                await logs.send(embed=embed)
+                await interaction.response.send_message(f'*Вы успешно добавили участнику <@{int(айди)}> **{число}** побед!*')
             if действие == 'убавить':
                 if collect.count_documents(fnd) == 0: await interaction.response.send_message(f'*Участника <@{int(айди)}> нету в базе данных, Вы не можете уменьшить число побед!*')
                 if collect.count_documents(fnd) == 1:
@@ -105,18 +107,32 @@ class events(commands.Cog):
                     if число > cnt: await interaction.response.send_message(f'*Число **{число}** больше чем число побед!*', ephemeral=True)
                     else:
                         collect.update_one(fnd, {'$set': {'count': cnt - число}})
+                        embed = discord.Embed(
+                            title="🎇 | Доска победителей",
+                            description=f">>> Уменьшено число побед <@{айди}> на **{число}**!",
+                            color=0xfaa821
+                        )
+                        embed.add_field(name="Ивентор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
+                        embed.add_field(name="Участник:", value=f"<@{айди}> ({айди})", inline=True)
+                        embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                        await logs.send(embed=embed)
                         await interaction.response.send_message(f'*Вы успешно убавили количество побед участника <@{int(айди)}> на **{число}***')
-                
-                embed=discord.Embed(
-                    title="Изменение ивентов",
-                    description=f"Участник **{interaction.author}** убавил победы человеку <@{int(айди)}> на `{число}`!",
-                    color=0x774177
-                )
-                embed.add_field(name="Дата действия", value=f"<t:{time.time()}>", inline=False)
-                embed.add_field(name="Айди ивентора", value=interaction.author.id, inline=False)
-                embed.add_field(name="Айди участника", value=айди, inline=False)
-                await channel.send()
-            
+            if действие == 'очистить':
+                role2 = interaction.guild.get_role(1142038902211870730)
+                if role2 not in interaction.user.roles: await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1142038902211870730>*', ephemeral=True)
+                elif role2 in interaction.user.roles:
+                    collect.delete_many({})
+                    embed = discord.Embed(
+                        title="🎇 | Доска победителей",
+                        description=f">>> Очищена доска победителей!",
+                        color=0xfaa821
+                    )
+                    embed.add_field(name="Куратор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
+                    embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                    await logs.send(embed=embed)
+                    await interaction.response.send_message(f'*Вы успешно очистили доску победителей*!')
+
+
 
     @app_commands.command(name="evtop", description="Просмотр топа победителей")
     async def evtop(
@@ -135,7 +151,6 @@ class events(commands.Cog):
             color = 0xfaa821
         )
         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-
         await interaction.response.send_message(embed=embed)
 
 
