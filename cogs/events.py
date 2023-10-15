@@ -139,9 +139,11 @@ class events(commands.Cog):
             self, interaction: discord.Interaction
     ):
         lst = []
+        number = [2, 3, 4]
         for query in collect.find():
             if query['count'] == 1: txt = "победа"
-            if query['count'] != 1: txt = "побед"
+            if query['count'] in number: txt = "победы"
+            if query['count'] > 5: txt = "побед"
 
             lst.append(f'<a:1041076662546219168:1041076662546219168> <@{query["_id"]}> — ***{query["count"]}*** {txt}')
 
