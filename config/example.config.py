@@ -11,5 +11,7 @@ class prefix:
     # Canary(BETA) Bot PREFIX
     CANARY = ['s.', 'S.']
     # By default here the s. and S. prefixes!
+class mongoconf:
+    uri = 'ebebebe'
 
 
