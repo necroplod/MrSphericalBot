@@ -5,6 +5,7 @@ from pymongo import MongoClient
 from discord.ext import commands
 from discord import app_commands
 from config.config import mongoconf
+import time
 
 cluster = MongoClient(f"{mongoconf.uri}")
 db = cluster.db
@@ -20,6 +21,7 @@ class events(commands.Cog):
             self, interaction: discord.Interaction,
             действие: typing.Literal['открыть', 'закрыть']
     ):
+        channel = self.client.get_channel(settings.channels.event_logs)
         role = interaction.guild.get_role(1142038601220235314)
         ch = interaction.guild.get_channel(1142025152398376980)
         rolemembers = interaction.guild.get_role(1146028746680311839)
@@ -37,6 +39,14 @@ class events(commands.Cog):
                 )
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
                 await ch.set_permissions(rolemembers, read_messages=True, send_messages=True)
+                embed=discord.Embed(
+                    title="Изменение ивентов",
+                    description=f"Участник **{interaction.author}** открыл чат-ивентов!",
+                    color=0x774177
+                )
+                embed.add_field(name="Дата действия", value=f"<t:{time.time()}>", inline=False)
+                embed.add_field(name="Айди ивентора", value=interaction.author.id, inline=False)
+                await channel.send()
             if действие == 'закрыть':
                 embed = discord.Embed(
                     title="🎀 | Ивенты",
@@ -45,7 +55,14 @@ class events(commands.Cog):
                 )
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
                 await ch.set_permissions(rolemembers, read_messages=True, send_messages=False)
-
+                embed=discord.Embed(
+                    title="Изменение ивентов",
+                    description=f"Участник **{interaction.author}** закрыл чат-ивентов!",
+                    color=0x774177
+                )
+                embed.add_field(name="Дата действия", value=f"<t:{time.time()}>", inline=False)
+                embed.add_field(name="Айди ивентора", value=interaction.author.id, inline=False)
+                await channel.send()
             await ch.send(embed=embed)
             await interaction.response.send_message('*Готово!*', ephemeral=True)
 
@@ -56,6 +73,7 @@ class events(commands.Cog):
             айди: typing.Optional[str],
             число: typing.Optional[int]
     ):
+        channel = self.client.get_channel(settings.channels.event_logs)
         role = interaction.guild.get_role(1142038601220235314)
         fnd = {'_id': айди}
 
@@ -71,6 +89,15 @@ class events(commands.Cog):
                 elif collect.count_documents(fnd) == 0:
                     collect.insert_one({'_id': айди, 'count': число})
                 await interaction.response.send_message(f'*Вы успешно добавили участнику <@{int(айди)}> **{число}** побед!*')
+                embed=discord.Embed(
+                    title="Изменение ивентов",
+                    description=f"Участник **{interaction.author}** добавил победы человеку <@{int(айди)}> на `{число}`!",
+                    color=0x774177
+                )
+                embed.add_field(name="Дата действия", value=f"<t:{time.time()}>", inline=False)
+                embed.add_field(name="Айди ивентора", value=interaction.author.id, inline=False)
+                embed.add_field(name="Айди участника", value=айди, inline=False)
+                await channel.send()
             if действие == 'убавить':
                 if collect.count_documents(fnd) == 0: await interaction.response.send_message(f'*Участника <@{int(айди)}> нету в базе данных, Вы не можете уменьшить число побед!*')
                 if collect.count_documents(fnd) == 1:
@@ -79,7 +106,17 @@ class events(commands.Cog):
                     else:
                         collect.update_one(fnd, {'$set': {'count': cnt - число}})
                         await interaction.response.send_message(f'*Вы успешно убавили количество побед участника <@{int(айди)}> на **{число}***')
-
+                
+                embed=discord.Embed(
+                    title="Изменение ивентов",
+                    description=f"Участник **{interaction.author}** убавил победы человеку <@{int(айди)}> на `{число}`!",
+                    color=0x774177
+                )
+                embed.add_field(name="Дата действия", value=f"<t:{time.time()}>", inline=False)
+                embed.add_field(name="Айди ивентора", value=interaction.author.id, inline=False)
+                embed.add_field(name="Айди участника", value=айди, inline=False)
+                await channel.send()
+            
 
     @app_commands.command(name="evtop", description="Просмотр топа победителей")
     async def evtop(

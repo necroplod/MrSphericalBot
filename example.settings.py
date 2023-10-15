@@ -19,6 +19,7 @@ class channels:
     tech_ticket = 0
     appeal_notify = 0
     recruit = 0
+    event_logs = 0
 class stats:
     all = 0
     members = 0
@@ -61,7 +62,8 @@ class extensions:
         'cogs.stats',
         'cogs.role',
         'cogs.rp',
-        'cogs.theme'
+        'cogs.theme',
+        'cogs.events'
     ]
     handlers = [
         'handlers.error',
