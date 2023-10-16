@@ -25,9 +25,6 @@ class stats:
     bots = 0
     boosts = 0
     status = 0
-
-    all_rp = 0
-    members_rp = 0
 class roles:
     manage_tickets = 0
     mods_tickets = 0
@@ -52,8 +49,6 @@ class misc:
     tickets_count = 0
     avatar_url = 'https://cdn.discordapp.com/avatars/959849629321666560/79e05274a4a0059dd2dd0c46a7370b21.webp?size=1024'
     footer = 'Мистер Сферический | Все права защищены'
-class messages:
-    congratulations = "Поздравляю, серверянин! Твоё остроумие и настойчивость принесли результаты. Продолжай в том же духе."
 class openai:
     key = "pk-XXXXXXX"
     url = "https://api.openai.com/v1"
