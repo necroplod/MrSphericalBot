@@ -166,6 +166,7 @@ class events(commands.Cog):
             if query['count'] == 1: txt = "победа"
             if query['count'] in number: txt = "победы"
             if query['count'] > 5: txt = "побед"
+            if query['count'] == 0: txt = "побед"
 
             lst.append(f'<a:1041076662546219168:1041076662546219168> <@{query["_id"]}> — ***{query["count"]}*** {txt}')
 
