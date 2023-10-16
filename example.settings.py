@@ -34,6 +34,10 @@ class roles:
     poll_role = 0
     senior_mod = 0
     mute = 0
+    eventor = 0
+    avanturist = 0
+    traveler = 0
+    firstevent = 0
 class logs:
     msg = 0
     role = 0
@@ -48,6 +52,8 @@ class misc:
     tickets_count = 0
     avatar_url = 'https://cdn.discordapp.com/avatars/959849629321666560/79e05274a4a0059dd2dd0c46a7370b21.webp?size=1024'
     footer = 'Мистер Сферический | Все права защищены'
+class messages:
+    congratulations = "Поздравляю, серверянин! Твоё остроумие и настойчивость принесли результаты. Продолжай в том же духе."
 class openai:
     key = "pk-XXXXXXX"
     url = "https://api.openai.com/v1"
@@ -63,7 +69,7 @@ class extensions:
         'cogs.role',
         'cogs.rp',
         'cogs.theme',
-        'cogs.events'
+        'cogs.events',
     ]
     handlers = [
         'handlers.error',

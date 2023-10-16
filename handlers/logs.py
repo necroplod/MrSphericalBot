@@ -20,7 +20,7 @@ class logs(commands.Cog):
         print(f"| Discord.py Version: {discord.__version__}                       |")
         print(f'----------------------------------------------------')
         print(" ")
-        logs = self.client.get_channel(1102889033593536542)
+        logs = self.client.get_channel(settings.channels.logs)
         embed = discord.Embed(
             title = '🎲 | Панель Управления',
             description = f'''

@@ -23,7 +23,7 @@ class events(commands.Cog):
             действие: typing.Literal['открыть', 'закрыть']
     ):
         channel = self.client.get_channel(settings.logs.event)
-        role = interaction.guild.get_role(1142038601220235314)
+        role = interaction.guild.get_role(settings.roles.eventor)
         ch = interaction.guild.get_channel(1142025152398376980)
         rolemembers = interaction.guild.get_role(1146028746680311839)
 
@@ -71,14 +71,16 @@ class events(commands.Cog):
     async def topmanage(
             self, interaction: discord.Interaction,
             действие: typing.Literal['добавить', 'убавить', 'очистить'],
-            айди: typing.Optional[str],
+            участник: discord.User,
             число: typing.Optional[int]
     ):
         logs = self.client.get_channel(settings.logs.event)
-        role = interaction.guild.get_role(1142038601220235314)
-        fnd = {'_id': айди}
-
-        if айди is None or число is None: await interaction.response.send_message(f'*Недостаточно аргументов команды!*', ephemeral=True)
+        role = interaction.guild.get_role(settings.roles.eventor)
+        fnd = {'_id': участник.id}
+        avanturist = interaction.guild.get_role(settings.roles.avanturist)
+        traveler = interaction.guild.get_role(settings.roles.traveler)
+        firstevent = interaction.guild.get_role(settings.roles.firstevent)
+        if участник.id is None or число is None: await interaction.response.send_message(f'*Недостаточно аргументов команды!*', ephemeral=True)
         if role not in interaction.user.roles: await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1142038601220235314>*', ephemeral=True)
         elif role in interaction.user.roles:
             if число < 1 and действие != 'очистить': await interaction.response.send_message(f'*Число **{число}** меньше единицы!*', ephemeral=True)
@@ -87,40 +89,57 @@ class events(commands.Cog):
                 if collect.count_documents(fnd) == 1:
                     cnt = collect.find_one(fnd)['count']
                     collect.update_one(fnd, {'$set': {'count': cnt + число}})
+                    if cnt + число == 3:
+                        if traveler not in участник.roles:
+                            await участник.add_roles(traveler)
+                    if cnt + число == 5:
+                        if firstevent not in участник.roles:
+                            await участник.add_roles(firstevent)
                 elif collect.count_documents(fnd) == 0:
-                    collect.insert_one({'_id': айди, 'count': число})
+                    collect.insert_one({'_id': участник.id, 'count': число})
+                    if avanturist not in участник.roles:
+                        await участник.add_roles(avanturist)
 
                 embed = discord.Embed(
                     title="🎇 | Доска победителей",
-                    description=f">>> Увеличено число побед <@{айди}> на **{число}**!",
+                    description=f">>> Увеличено число побед {участник.id} на **{число}**!",
                     color=0xfaa821
                 )
                 embed.add_field(name="Ивентор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
-                embed.add_field(name="Участник:", value=f"<@{айди}> ({айди})", inline=True)
+                embed.add_field(name="Участник:", value=f"<@{участник.id}> ({участник.id})", inline=True)
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
                 await logs.send(embed=embed)
-                await interaction.response.send_message(f'*Вы успешно добавили участнику <@{int(айди)}> **{число}** побед!*')
+                await interaction.response.send_message(f'*Вы успешно добавили участнику <@{участник.id}> **{число}** побед!*')
+                await участник.send(settings.messages.congratulations)
             if действие == 'убавить':
-                if collect.count_documents(fnd) == 0: await interaction.response.send_message(f'*Участника <@{int(айди)}> нету в базе данных, Вы не можете уменьшить число побед!*')
+                if collect.count_documents(fnd) == 0: await interaction.response.send_message(f'*Участника <@{int(участник.id)}> нету в базе данных, Вы не можете уменьшить число побед!*')
                 if collect.count_documents(fnd) == 1:
                     cnt = collect.find_one(fnd)['count']
-                    if число > cnt: await interaction.response.send_message(f'*Число **{число}** больше чем число побед!*', ephemeral=True)
+                    if число > cnt: число = cnt
                     else:
                         collect.update_one(fnd, {'$set': {'count': cnt - число}})
                         embed = discord.Embed(
                             title="🎇 | Доска победителей",
-                            description=f">>> Уменьшено число побед <@{айди}> на **{число}**!",
+                            description=f">>> Уменьшено число побед <@{участник.id}> на **{число}**!",
                             color=0xfaa821
                         )
                         embed.add_field(name="Ивентор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
-                        embed.add_field(name="Участник:", value=f"<@{айди}> ({айди})", inline=True)
+                        embed.add_field(name="Участник:", value=f"<@{участник.id}> ({участник.id})", inline=True)
                         embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
                         await logs.send(embed=embed)
-                        await interaction.response.send_message(f'*Вы успешно убавили количество побед участника <@{int(айди)}> на **{число}***')
+                        await interaction.response.send_message(f'*Вы успешно убавили количество побед участника <@{участник.id}> на **{число}***')
             if действие == 'очистить':
-                role2 = interaction.guild.get_role(1142038902211870730)
+                role2 = interaction.guild.get_role(1161661048517033992)
                 if role2 not in interaction.user.roles: await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1142038902211870730>*', ephemeral=True)
-                elif role2 in interaction.user.roles:
+                
+                for member in interaction.guild.members:
+                        if avanturist in member.roles:
+                            await member.remove_roles(avanturist)
+                        if traveler in member.roles:
+                            await member.remove_roles(traveler)
+                        if firstevent in member.roles:
+                            await member.remove_roles(firstevent)
+                if role2 in interaction.user.roles:
                     collect.delete_many({})
                     embed = discord.Embed(
                         title="🎇 | Доска победителей",
