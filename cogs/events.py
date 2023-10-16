@@ -102,7 +102,7 @@ class events(commands.Cog):
 
                 embed = discord.Embed(
                     title="🎇 | Доска победителей",
-                    description=f">>> Увеличено число побед {участник.id} на **{число}**!",
+                    description=f">>> Увеличено число побед <@{участник.id}> на **{число}**!",
                     color=0xfaa821
                 )
                 embed.add_field(name="Ивентор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
@@ -110,7 +110,7 @@ class events(commands.Cog):
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
                 await logs.send(embed=embed)
                 await interaction.response.send_message(f'*Вы успешно добавили участнику <@{участник.id}> **{число}** побед!*')
-                await участник.send(settings.messages.congratulations)
+                await участник.send(f'*Поздравляю, {участник.mention}! Твоё остроумие и настойчивость принесли результаты. Продолжай в том же духе!*')
             if действие == 'убавить':
                 if collect.count_documents(fnd) == 0: await interaction.response.send_message(f'*Участника <@{int(участник.id)}> нету в базе данных, Вы не можете уменьшить число побед!*')
                 if collect.count_documents(fnd) == 1:
@@ -129,17 +129,16 @@ class events(commands.Cog):
                         await logs.send(embed=embed)
                         await interaction.response.send_message(f'*Вы успешно убавили количество побед участника <@{участник.id}> на **{число}***')
             if действие == 'очистить':
-                role2 = interaction.guild.get_role(1161661048517033992)
+                role2 = interaction.guild.get_role(1142038902211870730)
                 if role2 not in interaction.user.roles: await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1142038902211870730>*', ephemeral=True)
-                
-                for member in interaction.guild.members:
+                if role2 in interaction.user.roles:
+                    for member in interaction.guild.members:
                         if avanturist in member.roles:
                             await member.remove_roles(avanturist)
                         if traveler in member.roles:
                             await member.remove_roles(traveler)
                         if firstevent in member.roles:
                             await member.remove_roles(firstevent)
-                if role2 in interaction.user.roles:
                     collect.delete_many({})
                     embed = discord.Embed(
                         title="🎇 | Доска победителей",
