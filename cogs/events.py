@@ -22,7 +22,7 @@ class events(commands.Cog):
             self, interaction: discord.Interaction,
             действие: typing.Literal['открыть', 'закрыть']
     ):
-        channel = self.client.get_channel(settings.logs.event)
+        logs = self.client.get_channel(settings.logs.event)
         role = interaction.guild.get_role(settings.roles.eventor)
         ch = interaction.guild.get_channel(1142025152398376980)
         rolemembers = interaction.guild.get_role(1146028746680311839)
@@ -35,36 +35,40 @@ class events(commands.Cog):
             if действие == 'открыть':
                 embed = discord.Embed(
                     title="🎀 | Ивенты",
-                    description=f"***Чат был открыт ивентором <@{interaction.user.id}>***\n\n***До скорых встреч!***",
+                    description=f"***Чат был открыт ивентором <@{interaction.user.id}>***",
                     color=0xd09248
                 )
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
                 await ch.set_permissions(rolemembers, read_messages=True, send_messages=True)
-                embed=discord.Embed(
-                    title="Изменение ивентов",
-                    description=f"Участник **{interaction.author}** открыл чат-ивентов!",
-                    color=0x774177
+
+                embed2 = discord.Embed(
+                    title="🎀 | Ивенты",
+                    description=f">>> Чат ивентов открыт.",
+                    color=0xd09248
                 )
-                embed.add_field(name="Дата действия", value=f"<t:{time.time()}>", inline=False)
-                embed.add_field(name="Айди ивентора", value=interaction.author.id, inline=False)
-                await channel.send()
+                embed2.add_field(name="Ивентор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
+                embed2.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                await logs.send(embed=embed2)
             if действие == 'закрыть':
                 embed = discord.Embed(
                     title="🎀 | Ивенты",
-                    description=f"***Чат был закрыт ивентором <@{interaction.user.id}>***",
+                    description=f"***Чат был закрыт ивентором <@{interaction.user.id}>***\n\n***До скорых встреч!***",
                     color=0xd09248
                 )
                 embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
                 await ch.set_permissions(rolemembers, read_messages=True, send_messages=False)
-                embed=discord.Embed(
-                    title="Изменение ивентов",
-                    description=f"Участник **{interaction.author}** закрыл чат-ивентов!",
-                    color=0x774177
+
+                embed2 = discord.Embed(
+                    title="🎀 | Ивенты",
+                    description=f">>> Чат ивентов закрыт.",
+                    color=0xd09248
                 )
-                embed.add_field(name="Дата действия", value=f"<t:{time.time()}>", inline=False)
-                embed.add_field(name="Айди ивентора", value=interaction.author.id, inline=False)
-                await logs.send()
+                embed2.add_field(name="Ивентор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
+                embed2.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+
+
             await ch.send(embed=embed)
+            await logs.send(embed=embed2)
             await interaction.response.send_message('*Готово!*', ephemeral=True)
 
     @app_commands.command(name = "topmanage", description = "Управление топом победителей")
