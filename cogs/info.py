@@ -55,15 +55,19 @@ class info(commands.Cog):
         await interaction.response.send_message(embed=answer)
         await mod.send(f'<@&1102489864240373811>', embed=embed)
 
-    @app_commands.command(name="kdk", description="Ням, ням пяченьки)")
-    async def kdk(
-            self, interaction: discord.Interaction
-    ):
-            embed = discord.Embed(color=discord.Color.random())
-            url = random.choice(Fun.kdk)
-            embed.set_image(url=url)
-            embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
-            await interaction.response.send_message(embed=embed)
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        ch = self.client.get_channel(settings.channels.boost)
+        boost = self.client.get_role(settings.roles.boost)
+        if message.type == discord.MessageType.premium_guild_subscription:
+            embed = discord.Embed(
+                title = "🎆 | Буст",
+                description = f"{after.mention} бустит сервер! Мои поздравления ^•^",
+                color = 0xc39de2
+            )
+            embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+            await ch.send(embed=embed)
+
 
 
 
