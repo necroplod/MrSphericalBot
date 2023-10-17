@@ -19,6 +19,7 @@ class channels:
     tech_ticket = 0
     appeal_notify = 0
     recruit = 0
+    boost = 0
 class stats:
     all = 0
     members = 0
@@ -35,6 +36,7 @@ class roles:
     avanturist = 0
     traveler = 0
     firstevent = 0
+    boost = 0
 class logs:
     msg = 0
     role = 0
