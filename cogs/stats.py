@@ -2,6 +2,13 @@ import discord
 import settings
 from discord.ext import commands
 from discord.ext import tasks
+from pymongo import MongoClient
+import asyncio
+from config.config import mongoconf
+
+cluster = MongoClient(mongoconf.uri)
+db = cluster.db
+collect = db.event
 
 class stats(commands.Cog):
 
@@ -20,13 +27,19 @@ class stats(commands.Cog):
 
         all = guild.member_count
         members = all - bots
-
+        user_with_max_wins = collect.find_one(sort=[("count", -1)])
+        if user_with_max_wins:
+            user = self.client.get_user(user_with_max_wins["_id"])
+            event_msg = f"🏆・{user}"
+        else:
+            event_msg = "🏆・Нет победителей"
         all_ch = self.client.get_channel(settings.stats.all)
         member_ch = self.client.get_channel(settings.stats.members)
         bots_ch = self.client.get_channel(settings.stats.bots)
         boosts_ch = self.client.get_channel(settings.stats.boosts)
         boosts_count = guild.premium_subscription_count
         status_ch = self.client.get_channel(settings.stats.status)
+        event_ch = self.client.get_channel(settings.stats.eventwin)
 
         onl = sum(member.status==discord.Status.online and not member.bot for member in guild.members)
         dnd = sum(member.status==discord.Status.dnd and not member.bot for member in guild.members)
@@ -36,6 +49,7 @@ class stats(commands.Cog):
         await discord.VoiceChannel.edit(member_ch, name=f"🎃・Участников: {members}")
         await discord.VoiceChannel.edit(bots_ch, name = f"👾・Ботов: {bots}")
         await discord.VoiceChannel.edit(boosts_ch, name=f"💎・Бустов: {boosts_count}")
+        await discord.VoiceChannel.edit(event_ch, name=event_msg)
         await discord.VoiceChannel.edit(status_ch, name=f"🟢{onl} ⛔{dnd} 🌙{idle}")
 
     @commands.Cog.listener()

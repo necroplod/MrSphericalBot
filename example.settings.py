@@ -26,6 +26,7 @@ class stats:
     bots = 0
     boosts = 0
     status = 0
+    eventwin = 0
 class roles:
     manage_tickets = 0
     mods_tickets = 0
