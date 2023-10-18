@@ -8,7 +8,7 @@ from config.config import mongoconf
 import settings
 import datetime
 
-cluster = MongoClient(f"{mongoconf.uri}")
+cluster = MongoClient(mongoconf.uri)
 db = cluster.db
 collect = db.event
 
