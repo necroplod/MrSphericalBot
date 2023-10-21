@@ -181,15 +181,16 @@ class adm(commands.Cog):
             return
         elif role in interaction.user.roles:
             ch = self.client.get_channel(settings.channels.proof)
+            file_ = await file.to_file(filename=f"{file.filename}", use_cached=True)
             embed = discord.Embed(
                 title = "🧶 | Доказательства",
-                description = f'''<a:768563657390030971:1041076662546219168>  **Модератор:** <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168>  **Нарушитель:** <@{нарушитель.id}>\n<a:768563657390030971:1041076662546219168>  **Время наказания:** {время}\n<a:768563657390030971:1041076662546219168>  **Доказательство:** ||{file.url}||''',
+                description = f'''<a:768563657390030971:1041076662546219168>  **Модератор:** <@{interaction.user.id}>\n<a:768563657390030971:1041076662546219168>  **Нарушитель:** <@{нарушитель.id}>\n<a:768563657390030971:1041076662546219168>  **Время наказания:** {время}''',
                 color = 0x98c379,
                 timestamp = datetime.datetime.now()
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-            embed.set_image(url = file.url)
             await ch.send(embed=embed)
+            await ch.send(file = file_)
             await interaction.response.send_message('*Доказательства успешно отправлены!*', ephemeral = True)
 
 
