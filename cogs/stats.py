@@ -16,23 +16,22 @@ class stats(commands.Cog):
         self.client = client
 
 
-    @tasks.loop(minutes = 15)
+    @tasks.loop(minutes = 45)
     async def stats(self):
         guild = self.client.get_guild(settings.misc.guild)
 
         bots = 0
         for member in guild.members:
-            if member.bot:
-                bots += 1
-
+            if member.bot: bots += 1
         all = guild.member_count
         members = all - bots
+
         user_with_max_wins = collect.find_one(sort=[("count", -1)])
         if user_with_max_wins:
             user = self.client.get_user(user_with_max_wins["_id"])
             event_msg = f"🏆・{user}"
-        else:
-            event_msg = "🏆・Нет победителей"
+        else: event_msg = "🏆・Нет победителей"
+
         all_ch = self.client.get_channel(settings.stats.all)
         member_ch = self.client.get_channel(settings.stats.members)
         bots_ch = self.client.get_channel(settings.stats.bots)
@@ -49,7 +48,7 @@ class stats(commands.Cog):
         await discord.VoiceChannel.edit(member_ch, name=f"🎃・Участников: {members}")
         await discord.VoiceChannel.edit(bots_ch, name = f"👾・Ботов: {bots}")
         await discord.VoiceChannel.edit(boosts_ch, name=f"💎・Бустов: {boosts_count}")
-        await discord.VoiceChannel.edit(event_ch, name=event_msg)
+        await discord.VoiceChannel.edit(event_ch, name = event_msg)
         await discord.VoiceChannel.edit(status_ch, name=f"🟢{onl} ⛔{dnd} 🌙{idle}")
 
     @commands.Cog.listener()
