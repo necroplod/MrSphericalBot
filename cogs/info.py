@@ -58,11 +58,13 @@ class info(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         ch = self.client.get_channel(settings.channels.boost)
-        boost = self.client.get_role(settings.roles.boost)
-        if message.type == discord.MessageType.premium_guild_subscription:
+        guild = self.client.get_guild(settings.misc.guild)
+        boost = guild.get_role(settings.roles.boost)
+        booster = message.author
+        if message.type == discord.MessageType.premium_guild_subscription and boost in booster.roles:
             embed = discord.Embed(
                 title = "🎆 | Буст",
-                description = f"{after.mention} бустит сервер! Мои поздравления ^•^",
+                description = f">>> {booster.mention} бустит сервер! Мои поздравления ^•^",
                 color = 0xc39de2
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
