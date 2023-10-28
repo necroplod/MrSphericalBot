@@ -23,17 +23,22 @@ class RecruitModal(discord.ui.Modal, title = '🏆 | Заявка'):
         ch = interaction.guild.get_channel(settings.channels.recruit)
         user = interaction.user
 
-        embed = discord.Embed(title = "🏆 | Заявка", color = 0xcfb53b)
+        if (datetime.datetime.now(datetime.timezone.utc) - user.created_at) < datetime.timedelta(days = 31):
+            await interaction.response.send_message('*Вы зарегистрированы в дискорде меньше месяца!*', ephemeral = True)
+            return
+        if (datetime.datetime.now(datetime.timezone.utc) - user.joined_at) < datetime.timedelta(days = 7):
+            await interaction.response.send_message('*Вы зашли на сервер меньше недели назад!*', ephemeral=True)
+            return
+        else:
+            embed = discord.Embed(title = "🏆 | Заявка", color = 0xcfb53b)
+            embed.add_field(name = "Основное:", value = f"<:sunsmirk:1008138014410674299>  Участник <@{user.id}>\n<:Poslkastrong:1062849475808350238>  Айди: {user.id}\n<:Vo:1079126733095174296>  Дата регистрации: <t:{round(user.created_at.timestamp())}:D> (<t:{round(user.created_at.timestamp())}:R>)", inline = False)
+            embed.add_field(name = "Сервер:", value = f"<:Switzerland:1047955071612244059>  Дата захода: <t:{round(user.joined_at.timestamp())}:D> (<t:{round(user.joined_at.timestamp())}:R>)\n<:krutoi:1071734769395716116>  Высшая роль: <@&{user.top_role.id}>", inline = False)
+            embed.add_field(name = "<:Nasaniash:1063562901958438922>  Заявка:", value = f"— {self.post.value}\n— {self.nameage.value}\n— {self.skill.value}\n— {self.time.value}\n— {self.why.value}", inline = False)
+            embed.set_thumbnail(url = interaction.user.avatar.url)
+            embed.set_footer(icon_url = settings.misc.avatar_url, text = settings.misc.footer)
 
-        embed.add_field(name = "Основное:", value = f"<:sunsmirk:1008138014410674299>  Участник <@{user.id}>\n<:Poslkastrong:1062849475808350238>  Айди: {user.id}\n<:Vo:1079126733095174296>  Дата регистрации: **{user.created_at.strftime('%d.%m.%Y')}**", inline = False)
-        embed.add_field(name = "Сервер:", value = f"<:Switzerland:1047955071612244059>  Дата захода: **{user.joined_at.strftime('%d.%m.%Y')}**\n<:krutoi:1071734769395716116>  Высшая роль: <@&{user.top_role.id}>", inline = False)
-        embed.add_field(name = "<:Nasaniash:1063562901958438922>  Заявка:", value = f"{self.post.value}\n{self.nameage.value}\n{self.skill.value}\n{self.time.value}\n{self.why.value}", inline = False)
-
-        embed.set_thumbnail(url = interaction.user.avatar.url)
-        embed.set_footer(icon_url = settings.misc.avatar_url, text = settings.misc.footer)
-
-        await ch.send(embed=embed)
-        await interaction.response.send_message('*Отправлено!*', ephemeral = True)
+            await ch.send(embed=embed)
+            await interaction.response.send_message('*Отправлено!*', ephemeral = True)
 
 class RecruitView(discord.ui.View):
     def __init__(self):
@@ -242,13 +247,20 @@ class adm(commands.Cog):
         if user.guild_permissions.administrator:
             embed = discord.Embed(
                 title = "🏆 | Заявка",
-                description = f">>> *Для того, чтобы попасть в нашу дружную команду необходимо обладать такими качествами:*\n— адекватность, \n— умение работать в команде, \n— знания русского языка, \n— наличие 2FA, \n— ну и самое главное - желание двигаться по карьерной лестнице !",
+                description = f">>> *Для того, чтобы попасть в нашу дружную команду необходимо обладать такими качествами:*\n— адекватность, \n— умение работать в команде, \n— знания русского языка, \n— наличие 2FA, \n— уровень <@310848622642069504> не ниже 10, \n— не меньше месяца аккаунту, \n— не меньше недели на сервере,  \n— ну и самое главное - желание двигаться по карьерной лестнице !",
                 color = 0x9c3f3f
             )
             embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-            await interaction.response.send_message(embed=embed, view = RecruitView())
+            embed2 = discord.Embed(
+                title = "",
+                description = '***ВНИМАНИЕ УЧАСТНИКАМ!!!***\n>>> 1. За "рофельные", т.е. шуточные заявки будет выдан пред на 2 недели. При повторе - мут на 6ч. Мы ищем нормальных людей, которые хотят помочь развитию сервера, а не несерьезных приколистов.\n2. Как вы должны знать, для пользования Дискордом вам должно быть от 13 лет включительно. Если будет замечено, что вам меньше 13 лет, вы будете забанены на сервере за нарушение TOS Discord.',
+                color = 0xd5f1f6
+            )
+            embed2.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+            await interaction.response.send_message(embeds=[embed, embed2], view = RecruitView())
         else:
             await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь права администратора!*', ephemeral=True)
+
 
 
 
