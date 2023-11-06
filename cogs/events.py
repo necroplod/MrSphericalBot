@@ -116,22 +116,25 @@ class events(commands.Cog):
                 await interaction.response.send_message(f'*Вы успешно добавили участнику <@{участник.id}> **{число}** побед!*')
                 await участник.send(f'*Поздравляю, {участник.mention}! Твоё остроумие и настойчивость принесли результаты. Продолжай в том же духе!*')
             if действие == 'убавить':
-                if collect.count_documents(fnd) == 0: await interaction.response.send_message(f'*Участника <@{int(участник.id)}> нету в базе данных, Вы не можете уменьшить число побед!*')
                 if collect.count_documents(fnd) == 1:
                     cnt = collect.find_one(fnd)['count']
                     if число > cnt: число = cnt
+                    if число <= cnt: 
+                        collect.delete_one(fnd) 
                     else:
                         collect.update_one(fnd, {'$set': {'count': cnt - число}})
-                        embed = discord.Embed(
+                    embed = discord.Embed(
                             title="🎇 | Доска победителей",
                             description=f">>> Уменьшено число побед <@{участник.id}> на **{число}**!",
                             color=0xfaa821
-                        )
-                        embed.add_field(name="Ивентор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
-                        embed.add_field(name="Участник:", value=f"<@{участник.id}> ({участник.id})", inline=True)
-                        embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-                        await logs.send(embed=embed)
-                        await interaction.response.send_message(f'*Вы успешно убавили количество побед участника <@{участник.id}> на **{число}***')
+                     )
+                    embed.add_field(name="Ивентор:", value=f"<@{interaction.user.id}> ({interaction.user.id})", inline=True)
+                    embed.add_field(name="Участник:", value=f"<@{участник.id}> ({участник.id})", inline=True)
+                    embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
+                    await logs.send(embed=embed)
+                    await interaction.response.send_message(f'*Вы успешно убавили количество побед участника <@{участник.id}> на **{число}***')
+                if collect.count_documents(fnd) == 0: await interaction.response.send_message(f'*Участника <@{int(участник.id)}> нету в базе данных, Вы не можете уменьшить число побед!*')
+
             if действие == 'очистить':
                 role2 = interaction.guild.get_role(1142038902211870730)
                 if role2 not in interaction.user.roles: await interaction.response.send_message('*У Вас недостаточно прав! Вам необходимо иметь роль <@&1142038902211870730>*', ephemeral=True)
@@ -162,21 +165,27 @@ class events(commands.Cog):
     ):
         lst = []
         number = [2, 3, 4]
-        for query in collect.find():
+        top_players = collect.find().sort("count", -1).limit(10)  # Получение топ-10 игроков
+        for index, query in enumerate(top_players):
             if query['count'] == 1: txt = "победа"
             if query['count'] in number: txt = "победы"
-            if query['count'] > 5: txt = "побед"
+            if query['count'] >= 5: txt = "побед"
             if query['count'] == 0: txt = "побед"
-
-            lst.append(f'<a:1041076662546219168:1041076662546219168> <@{query["_id"]}> — ***{query["count"]}*** {txt}')
-
+            match index + 1:
+                case 1:
+                    lst.append(f'🏆 **{index + 1} ⠀・** <@{query["_id"]}> — `{query["count"]}` {txt}')
+                case 2:
+                    lst.append(f'🪐 **{index + 1} ⠀・** <@{query["_id"]}> — `{query["count"]}` {txt}')
+                case 3:
+                    lst.append(f'🌎 **{index + 1} ⠀・** <@{query["_id"]}> — `{query["count"]}` {txt}')
+                case _:
+                    lst.append(f'**{index + 1} ⠀・** <@{query["_id"]}> — `{query["count"]}` {txt}')
         embed = discord.Embed(
-            title = "🎇 | Доска победителей",
             description = "\n".join(lst),
-            color = 0xfaa821
+            color = 0x8f00ff
         )
-        embed.set_footer(icon_url=settings.misc.avatar_url, text=settings.misc.footer)
-        await interaction.response.send_message(embed=embed)
+        embed.set_footer(icon_url=settings.misc.avatar_url, text="Это топ победителей участвующих в ивентах. Рады для вас их проводить ;)")
+        await interaction.response.send_message(content="# 🎇 | Доска победителей", embed=embed)
 
 
 
