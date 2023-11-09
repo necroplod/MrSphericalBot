@@ -165,7 +165,7 @@ class events(commands.Cog):
     ):
         lst = []
         number = [2, 3, 4]
-        top_players = collect.find().sort("count", -1).limit(10)  # Получение топ-10 игроков
+        top_players = collect.find().sort("count", -1).limit(10)
         for index, query in enumerate(top_players):
             if query['count'] == 1: txt = "победа"
             if query['count'] in number: txt = "победы"
@@ -173,19 +173,19 @@ class events(commands.Cog):
             if query['count'] == 0: txt = "побед"
             match index + 1:
                 case 1:
-                    lst.append(f'🏆 **{index + 1} ⠀・** <@{query["_id"]}> — `{query["count"]}` {txt}')
+                    lst.append(f'<a:768563657390030971:1041076662546219168>  🏆 ***{index + 1}*** — <@{query["_id"]}> — `{query["count"]}` {txt}')
                 case 2:
-                    lst.append(f'🪐 **{index + 1} ⠀・** <@{query["_id"]}> — `{query["count"]}` {txt}')
+                    lst.append(f'<a:768563657390030971:1041076662546219168>  🪐 ***{index + 1}*** — <@{query["_id"]}> — `{query["count"]}` {txt}')
                 case 3:
-                    lst.append(f'🌎 **{index + 1} ⠀・** <@{query["_id"]}> — `{query["count"]}` {txt}')
+                    lst.append(f'<a:768563657390030971:1041076662546219168>  🌎 ***{index + 1}*** — <@{query["_id"]}> — `{query["count"]}` {txt}')
                 case _:
-                    lst.append(f'**{index + 1} ⠀・** <@{query["_id"]}> — `{query["count"]}` {txt}')
+                    lst.append(f'<a:768563657390030971:1041076662546219168>  ***{index + 1}*** — <@{query["_id"]}> — `{query["count"]}` {txt}')
         embed = discord.Embed(
             description = "\n".join(lst),
             color = 0x8f00ff
         )
         embed.set_footer(icon_url=settings.misc.avatar_url, text="Это топ победителей участвующих в ивентах. Рады для вас их проводить ;)")
-        await interaction.response.send_message(content="# 🎇 | Доска победителей", embed=embed)
+        await interaction.response.send_message(content = "# 🎇 | Доска победителей", embed=embed)
 
 
 
