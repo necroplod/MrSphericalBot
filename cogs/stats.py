@@ -26,10 +26,10 @@ class stats(commands.Cog):
         all = guild.member_count
         members = all - bots
 
-        user_with_max_wins = collect.find_one(sort=[("count", -1)])
-        if user_with_max_wins:
-            user = self.client.get_user(user_with_max_wins["_id"])
-            event_msg = f"🏆・{user}"
+        uwmx = list(collect.find().sort("count", -1).limit(1))[0]
+        if uwmx:
+            user = guild.get_member(int(uwmx["_id"]))
+            event_msg = f"🏆・{user.nick}"
         else: event_msg = "🏆・Нет победителей"
 
         all_ch = self.client.get_channel(settings.stats.all)
