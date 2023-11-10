@@ -105,6 +105,11 @@ class TicketClose(discord.ui.View):
             view_channel=False
         )
         await ch.set_permissions(
+            interaction.guild.get_role(settings.roles.jnprbot),
+            send_messages=False,
+            view_channel=False
+        )
+        await ch.set_permissions(
             interaction.guild.default_role,
             send_messages=False,
             view_channel=False
@@ -203,6 +208,11 @@ class TicketAppeal(discord.ui.Modal, title = '📨 | Апелляции'):
             read_message_history=True,
             read_messages=True
         )
+        await ch.set_permissions(
+            interaction.guild.get_role(settings.roles.jnprbot),
+            send_messages=False,
+            view_channel=False
+        )
         embed = discord.Embed(
             title="🥊 | Тикеты",
             description=f"*Поддержка скоро свяжется с вами.\nДля закрытия нажмите кнопку ниже.*\n*Информация для поддержки:*\n```Тема: Апелляция\n1. {self.mod.value}\n2. {self.time.value}\n3. {self.reason.value}\n4. {self.why.value}```",
@@ -281,6 +291,11 @@ class Select(discord.ui.Select):
                     guild.default_role,
                     view_channel=False,
                     send_messages=False,
+                )
+                await ch.set_permissions(
+                    interaction.guild.get_role(settings.roles.jnprbot),
+                    send_messages=False,
+                    view_channel=False
                 )
                 await ch.set_permissions(
                     interaction.user,
