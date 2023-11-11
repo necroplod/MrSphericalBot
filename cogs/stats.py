@@ -16,7 +16,7 @@ class stats(commands.Cog):
         self.client = client
 
 
-    @tasks.loop(minutes = 45)
+    @tasks.loop(minutes = 15)
     async def stats(self):
         guild = self.client.get_guild(settings.misc.guild)
 
@@ -44,12 +44,18 @@ class stats(commands.Cog):
         dnd = sum(member.status==discord.Status.dnd and not member.bot for member in guild.members)
         idle = sum(member.status == discord.Status.idle and not member.bot for member in guild.members)
 
-        await discord.VoiceChannel.edit(all_ch, name=f"🤠・Всего: {all}")
-        await discord.VoiceChannel.edit(member_ch, name=f"🎃・Участников: {members}")
-        await discord.VoiceChannel.edit(bots_ch, name = f"👾・Ботов: {bots}")
-        await discord.VoiceChannel.edit(boosts_ch, name=f"💎・Бустов: {boosts_count}")
-        await discord.VoiceChannel.edit(event_ch, name = event_msg)
-        await discord.VoiceChannel.edit(status_ch, name=f"🟢{onl} ⛔{dnd} 🌙{idle}")
+        try: await discord.VoiceChannel.edit(all_ch, name=f"🤠・Всего: {all}")
+        except: ...
+        try: await discord.VoiceChannel.edit(member_ch, name=f"🎃・Участников: {members}")
+        except: ...
+        try: await discord.VoiceChannel.edit(bots_ch, name = f"👾・Ботов: {bots}")
+        except: ...
+        try: await discord.VoiceChannel.edit(boosts_ch, name=f"💎・Бустов: {boosts_count}")
+        except: ...
+        try: await discord.VoiceChannel.edit(event_ch, name = event_msg)
+        except: ...
+        try: await discord.VoiceChannel.edit(status_ch, name=f"🟢{onl} ⛔{dnd} 🌙{idle}")
+        except: ...
 
     @commands.Cog.listener()
     async def on_ready(self):
