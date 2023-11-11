@@ -85,7 +85,7 @@ class dev(commands.Cog):
     async def sync(self, ctx):
         embed = discord.Embed(
             title='🎲 | Панель Управления',
-            description=f'<a:768563657390030971:1041076662546219168>  *Слэщ-команды успешно синхронизированы!*',
+            description=f'<a:768563657390030971:1041076662546219168>  *Слэш-команды успешно синхронизированы!*',
             color=0xcdc9a5
         )
         embed.set_footer(icon_url=self.client.user.avatar.url, text=f'{self.client.user.name} | Все права защищены')
